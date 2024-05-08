@@ -41,10 +41,22 @@ import java.util.List;
 
 public class DSSAPI {
 
+    public byte[] signDocument(byte[] unsignedDocument, List<KeyStoreParams> keyStores, String signatureLevel, boolean extendSignature){
+        if(signatureLevel.startsWith("PAdES")){
+            return signPades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), extendSignature);
+        } else if(signatureLevel.startsWith("XAdES")){
+            return signXades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature);
+        } else if(signatureLevel.startsWith("JAdES")){
+            return signJades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature);
+        } else {
+            return signCades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature);
+        }
+    }
+
 
     // add support for visible signatures, B T LT LTA level support, other signatures
     // maybe add support to extend signatures
-    public byte[] signPades(byte[] unsignedDocument, List<KeyStoreParams> keyStores, SignatureLevel signatureLevel, boolean visibleSignature, boolean extendSignature){
+    private byte[] signPades(byte[] unsignedDocument, List<KeyStoreParams> keyStores, SignatureLevel signatureLevel, boolean extendSignature){
         DSSDocument signedDocument = new InMemoryDocument(unsignedDocument);
         CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
         PAdESService padesService = new PAdESService(commonCertificateVerifier);
@@ -108,7 +120,7 @@ public class DSSAPI {
         return DSSUtils.toByteArray(signedDocument);
     }
 
-    public byte[] signXades(byte[] unsignedDocument, List<KeyStoreParams> keyStores, SignatureLevel signatureLevel, SignaturePackaging signaturePackaging, boolean extendSignature) throws Exception {
+    private byte[] signXades(byte[] unsignedDocument, List<KeyStoreParams> keyStores, SignatureLevel signatureLevel, SignaturePackaging signaturePackaging, boolean extendSignature) {
         DSSDocument signedDocument = new InMemoryDocument(unsignedDocument);
         CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
         XAdESService xadesService = new XAdESService(commonCertificateVerifier);
@@ -181,7 +193,7 @@ public class DSSAPI {
         return DSSUtils.toByteArray(signedDocument);
     }
 
-    public byte[] signCades(byte[] unsignedDocument, List<KeyStoreParams> keyStores, SignatureLevel signatureLevel, SignaturePackaging signaturePackaging, boolean extendSignature) throws Exception {
+    private byte[] signCades(byte[] unsignedDocument, List<KeyStoreParams> keyStores, SignatureLevel signatureLevel, SignaturePackaging signaturePackaging, boolean extendSignature) {
         DSSDocument signedDocument = new InMemoryDocument(unsignedDocument);
         CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
         CAdESService cadesService = new CAdESService(commonCertificateVerifier);
@@ -256,7 +268,7 @@ public class DSSAPI {
         return DSSUtils.toByteArray(signedDocument);
     }
 
-    public byte[] signJades(byte[] unsignedDocument, List<KeyStoreParams> keyStores, SignatureLevel signatureLevel, SignaturePackaging signaturePackaging, boolean extendSignature) throws Exception {
+    private byte[] signJades(byte[] unsignedDocument, List<KeyStoreParams> keyStores, SignatureLevel signatureLevel, SignaturePackaging signaturePackaging, boolean extendSignature) {
         DSSDocument signedDocument = new InMemoryDocument(unsignedDocument);
         CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
         JAdESService jadesService = new JAdESService(commonCertificateVerifier);

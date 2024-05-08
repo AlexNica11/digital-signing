@@ -1,5 +1,6 @@
 package com.ds.dsms;
 
+import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import com.ds.dsms.dss.DSSAPI;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
 import com.ds.dsms.dss.keystore.PrivateKeyParams;
@@ -19,12 +20,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 class DsmsApplicationTests {
+	private String resourcesPath = "src/test/resources/";
 
 	@Test
-	void contextLoads() {
+	void test() throws IOException {
+		byte[] unsignedDocument = FileUtils.readFileToByteArray(new File(resourcesPath + "xml_example.xml"));
 	}
 
 	/*
@@ -40,13 +44,12 @@ class DsmsApplicationTests {
 	 */
 	@Test
 	void testPades() throws IOException {
-		String resourcesPath = "src/test/resources/";
 		byte[] keyStore = FileUtils.readFileToByteArray(new File(resourcesPath + "good-user-crl-ocsp.p12"));
 		byte[] unsignedDocument = FileUtils.readFileToByteArray(new File(resourcesPath + "signedDocument - Copy (2).pdf"));
 		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
-		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "ks-password", List.of(privateKeyParams));
+		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
 		DSSAPI dssapi = new DSSAPI();
-		byte[] signedPades = dssapi.signPades(unsignedDocument, List.of(keyStoreParams), SignatureLevel.PAdES_BASELINE_LTA, false, true);
+		byte[] signedPades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.PAdES_BASELINE_LTA.name(), true);
 		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedDocument.pdf"), signedPades);
 
 		testDocument(signedPades);
@@ -54,13 +57,12 @@ class DsmsApplicationTests {
 
 	@Test
 	void testXades() throws Exception {
-		String resourcesPath = "src/test/resources/";
 		byte[] keyStore = FileUtils.readFileToByteArray(new File(resourcesPath + "good-user-crl-ocsp.p12"));
 		byte[] unsignedDocument = FileUtils.readFileToByteArray(new File(resourcesPath + "signedXml - Copy.xml"));
 		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
-		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "ks-password", List.of(privateKeyParams));
+		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
 		DSSAPI dssapi = new DSSAPI();
-		byte[] signXades = dssapi.signXades(unsignedDocument, List.of(keyStoreParams), SignatureLevel.XAdES_BASELINE_LTA, SignaturePackaging.ENVELOPED, true);
+		byte[] signXades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.XAdES_BASELINE_LTA.name(), true);
 		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.xml"), signXades);
 
 		testDocument(signXades);
@@ -68,13 +70,12 @@ class DsmsApplicationTests {
 
 	@Test
 	void testCades() throws Exception {
-		String resourcesPath = "src/test/resources/";
 		byte[] keyStore = FileUtils.readFileToByteArray(new File(resourcesPath + "good-user-crl-ocsp.p12"));
 		byte[] unsignedDocument = FileUtils.readFileToByteArray(new File(resourcesPath + "xml_example.xml"));
 		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
-		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "ks-password", List.of(privateKeyParams));
+		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
 		DSSAPI dssapi = new DSSAPI();
-		byte[] signCades = dssapi.signCades(unsignedDocument, List.of(keyStoreParams), SignatureLevel.CAdES_BASELINE_LTA, SignaturePackaging.ENVELOPING, false);
+		byte[] signCades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.CAdES_BASELINE_LTA.name(), false);
 		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.p7m"), signCades);
 
 		testDocument(signCades);
@@ -82,13 +83,12 @@ class DsmsApplicationTests {
 
 	@Test
 	void testJades() throws Exception {
-		String resourcesPath = "src/test/resources/";
 		byte[] keyStore = FileUtils.readFileToByteArray(new File(resourcesPath + "good-user-crl-ocsp.p12"));
 		byte[] unsignedDocument = FileUtils.readFileToByteArray(new File(resourcesPath + "xml_example.xml"));
 		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
-		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "ks-password", List.of(privateKeyParams));
+		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
 		DSSAPI dssapi = new DSSAPI();
-		byte[] signJades = dssapi.signJades(unsignedDocument, List.of(keyStoreParams), SignatureLevel.JAdES_BASELINE_LTA, SignaturePackaging.ENVELOPING, false);
+		byte[] signJades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.JAdES_BASELINE_LTA.name(), false);
 		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.json"), signJades);
 
 		testDocument(signJades);
