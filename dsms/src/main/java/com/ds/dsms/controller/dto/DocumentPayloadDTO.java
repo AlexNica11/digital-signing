@@ -10,8 +10,7 @@ import java.util.List;
 @Getter
 public class DocumentPayloadDTO implements Serializable {
 
-    @NonNull
-    private final byte[] document;
+    private final byte @NonNull [] document;
 
     @NonNull
     private final String documentName;
@@ -19,7 +18,6 @@ public class DocumentPayloadDTO implements Serializable {
     @NonNull
     private final String signature;
 
-    @NonNull
     private final boolean extendSignature;
 
     @NonNull
@@ -27,7 +25,7 @@ public class DocumentPayloadDTO implements Serializable {
 
     private final boolean encrypt;
 
-    public DocumentPayloadDTO(@NonNull byte[] document, @NonNull String documentName, @NonNull String signature, @NonNull boolean extendSignature, @NonNull List<KeyStoreParams> keyStoreParams, boolean encrypt) {
+    public DocumentPayloadDTO(byte @NonNull [] document, @NonNull String documentName, @NonNull String signature, boolean extendSignature, @NonNull List<KeyStoreParams> keyStoreParams, boolean encrypt) {
         this.document = document;
         this.documentName = documentName;
         this.signature = signature;

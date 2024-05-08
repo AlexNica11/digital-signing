@@ -4,6 +4,7 @@ import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import com.ds.dsms.dss.DSSAPI;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
 import com.ds.dsms.dss.keystore.PrivateKeyParams;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -29,6 +30,15 @@ class DsmsApplicationTests {
 	@Test
 	void test() throws IOException {
 		byte[] unsignedDocument = FileUtils.readFileToByteArray(new File(resourcesPath + "xml_example.xml"));
+		String documentName = "xml_example.xml";
+		String signature = SignatureLevel.XAdES_BASELINE_LTA.name();
+		boolean extendSignature = false;
+		byte[] keyStore = FileUtils.readFileToByteArray(new File(resourcesPath + "good-user-crl-ocsp.p12"));
+		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
+		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
+		DocumentPayloadDTO documentPayload = new DocumentPayloadDTO(unsignedDocument, documentName, signature, extendSignature, List.of(keyStoreParams), false);
+		ObjectMapper objectMapper = new ObjectMapper();
+		System.out.println(objectMapper.writeValueAsString(documentPayload));
 	}
 
 	/*

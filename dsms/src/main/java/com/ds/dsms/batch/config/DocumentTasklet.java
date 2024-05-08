@@ -22,10 +22,12 @@ public class DocumentTasklet implements Tasklet, StepExecutionListener {
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        documentPayload = (DocumentPayloadDTO) Objects.requireNonNull(stepExecution.getJobParameters().getParameter(BatchUtils.BATCH_JOB_ID)).getValue();
+//        documentPayload = (DocumentPayloadDTO) Objects.requireNonNull(stepExecution.getJobParameters().getParameter(BatchUtils.BATCH_JOB_ID)).getValue();
+        System.out.println("hi");
+        documentPayload = BatchUtils.UNFINISHED_JOBS.remove(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID));
         List<KeyStoreParams> keyStoreParams = documentPayload.getKeyStoreParams();
         for(KeyStoreParams keyStoreParam : keyStoreParams) {
-            if(keyStoreParam.getKeyStore() == null){
+            if(keyStoreParam.getKeyStore().length == 0){
                 keyStoreParam.setKeyStore(BatchUtils.getKeyStore(keyStoreParam.getKeyStoreName()));
             }
         }
@@ -41,7 +43,9 @@ public class DocumentTasklet implements Tasklet, StepExecutionListener {
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
+        System.out.println(signedDocument.length);
         BatchUtils.FINISHED_JOBS.put(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID), signedDocument);
+
 
         return stepExecution.getExitStatus();
     }
