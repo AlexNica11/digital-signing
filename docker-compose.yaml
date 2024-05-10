@@ -1,0 +1,18 @@
+services:
+  postgresdb:
+    image: postgres:14.11-alpine
+    #When a container fails, this ensures that a new one starts right up
+    restart: always
+    command: postgres -c 'max_connections=100'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgresdb:/var/lib/postgresql/data
+
+volumes:
+  postgresdb:
+    driver: local
+        
