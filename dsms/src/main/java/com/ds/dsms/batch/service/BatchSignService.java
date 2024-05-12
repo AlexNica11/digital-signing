@@ -1,5 +1,6 @@
 package com.ds.dsms.batch.service;
 
+import com.ds.dsms.batch.BatchUtils;
 import com.ds.dsms.controller.SignController;
 import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import org.slf4j.Logger;
@@ -15,8 +16,8 @@ import org.springframework.stereotype.Service;
 public class BatchSignService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BatchSignService.class);
 
-    private JobLauncher jobLauncher;
-    private Job job;
+    private final JobLauncher jobLauncher;
+    private final Job job;
 
     public BatchSignService(JobLauncher jobLauncher, Job job) {
         this.jobLauncher = jobLauncher;
@@ -29,7 +30,8 @@ public class BatchSignService {
 //                .addJobParameter(BatchUtils.BATCH_PAYLOAD, documentPayload, DocumentPayloadDTO.class)
                 .toJobParameters();
 
-        BatchUtils.UNFINISHED_JOBS.put(jobId, documentPayload);
+//        BatchUtils.UNFINISHED_JOBS.put(jobId, documentPayload);
+        BatchUtils.getDocumentCache().put(jobId, documentPayload);
 
         try {
             JobExecution jobExecution = jobLauncher.run(job, jobParameters);

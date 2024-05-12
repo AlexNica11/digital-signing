@@ -14,9 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 @Configuration
 public class BatchConfiguration {
 
@@ -29,17 +26,17 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step getStep1(){
+    public Step signingStep(){
         return new StepBuilder("step1", jobRepository)
                 .tasklet(new DocumentTasklet(), transactionManager)
                 .build();
     }
 
     @Bean
-    public Job getJob(){
+    public Job signingJob(){
         return new JobBuilder("job1", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(getStep1())
+                .start(signingStep())
                 .build();
     }
 

@@ -1,6 +1,6 @@
 package com.ds.dsms.batch.config;
 
-import com.ds.dsms.batch.service.BatchUtils;
+import com.ds.dsms.batch.BatchUtils;
 import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import com.ds.dsms.dss.DSSAPI;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
@@ -14,6 +14,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 public class DocumentTasklet implements Tasklet, StepExecutionListener {
 
@@ -23,8 +24,7 @@ public class DocumentTasklet implements Tasklet, StepExecutionListener {
     @Override
     public void beforeStep(StepExecution stepExecution) {
 //        documentPayload = (DocumentPayloadDTO) Objects.requireNonNull(stepExecution.getJobParameters().getParameter(BatchUtils.BATCH_JOB_ID)).getValue();
-        System.out.println("hi");
-        documentPayload = BatchUtils.UNFINISHED_JOBS.remove(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID));
+        documentPayload = BatchUtils.getDocumentFromCache(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID));
         List<KeyStoreParams> keyStoreParams = documentPayload.getKeyStoreParams();
         for(KeyStoreParams keyStoreParam : keyStoreParams) {
             if(keyStoreParam.getKeyStore().length == 0){
