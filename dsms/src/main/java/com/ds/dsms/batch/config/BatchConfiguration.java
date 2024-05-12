@@ -47,6 +47,7 @@ public class BatchConfiguration {
         jobLauncher.setJobRepository(jobRepository);
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
         taskExecutor.setConcurrencyLimit(4);
+        taskExecutor.setVirtualThreads(true);
         jobLauncher.setTaskExecutor(taskExecutor);
         jobLauncher.afterPropertiesSet();
         return jobLauncher;
