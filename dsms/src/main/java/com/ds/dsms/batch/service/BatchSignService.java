@@ -3,6 +3,8 @@ package com.ds.dsms.batch.service;
 import com.ds.dsms.batch.BatchUtils;
 import com.ds.dsms.controller.SignController;
 import com.ds.dsms.controller.dto.DocumentPayloadDTO;
+import com.ds.dsms.repo.SignedDocumentRepository;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
@@ -19,9 +21,13 @@ public class BatchSignService {
     private final JobLauncher jobLauncher;
     private final Job job;
 
-    public BatchSignService(JobLauncher jobLauncher, Job job) {
+    @Getter
+    private static SignedDocumentRepository signedDocumentRepository = null;
+
+    public BatchSignService(JobLauncher jobLauncher, Job job, SignedDocumentRepository signedDocumentRepository) {
         this.jobLauncher = jobLauncher;
         this.job = job;
+        BatchSignService.signedDocumentRepository = signedDocumentRepository;
     }
 
     public Long signJob(String jobId, DocumentPayloadDTO documentPayload){

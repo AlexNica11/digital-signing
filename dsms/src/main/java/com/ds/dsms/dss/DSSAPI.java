@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.util.Pair;
 
 import java.io.File;
 import java.security.KeyStore.PasswordProtection;
@@ -41,15 +42,19 @@ import java.util.List;
 
 public class DSSAPI {
 
-    public byte[] signDocument(byte[] unsignedDocument, List<KeyStoreParams> keyStores, String signatureLevel, boolean extendSignature){
+    public Pair<byte[], String> signDocument(byte[] unsignedDocument, List<KeyStoreParams> keyStores, String signatureLevel, boolean extendSignature){
         if(signatureLevel.startsWith("PAdES")){
-            return signPades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), extendSignature);
+            return Pair.of(signPades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), extendSignature),
+                    ".pdf");
         } else if(signatureLevel.startsWith("XAdES")){
-            return signXades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature);
+            return Pair.of(signXades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature),
+                    ".xml");
         } else if(signatureLevel.startsWith("JAdES")){
-            return signJades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature);
+            return Pair.of(signJades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature),
+                    ".json");
         } else {
-            return signCades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature);
+            return Pair.of(signCades(unsignedDocument, keyStores, SignatureLevel.valueByName(signatureLevel), SignaturePackaging.ENVELOPING, extendSignature),
+                    ".p7m");
         }
     }
 

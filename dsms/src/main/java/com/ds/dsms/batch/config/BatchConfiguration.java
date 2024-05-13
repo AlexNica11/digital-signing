@@ -27,14 +27,14 @@ public class BatchConfiguration {
 
     @Bean
     public Step signingStep(){
-        return new StepBuilder("step1", jobRepository)
+        return new StepBuilder("signingStep", jobRepository)
                 .tasklet(new DocumentTasklet(), transactionManager)
                 .build();
     }
 
     @Bean
     public Job signingJob(){
-        return new JobBuilder("job1", jobRepository)
+        return new JobBuilder("signingJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(signingStep())
                 .build();

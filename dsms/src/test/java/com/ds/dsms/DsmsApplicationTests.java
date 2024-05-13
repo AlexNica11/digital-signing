@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,10 +60,10 @@ class DsmsApplicationTests {
 		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
 		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
 		DSSAPI dssapi = new DSSAPI();
-		byte[] signedPades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.PAdES_BASELINE_LTA.name(), true);
-		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedDocument.pdf"), signedPades);
+		Pair<byte[], String> signedPades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.PAdES_BASELINE_LTA.name(), true);
+		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedDocument.pdf"), signedPades.getFirst());
 
-		testDocument(signedPades);
+		testDocument(signedPades.getFirst());
 	}
 
 	@Test
@@ -72,10 +73,10 @@ class DsmsApplicationTests {
 		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
 		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
 		DSSAPI dssapi = new DSSAPI();
-		byte[] signXades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.XAdES_BASELINE_LTA.name(), true);
-		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.xml"), signXades);
+		Pair<byte[], String> signXades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.XAdES_BASELINE_LTA.name(), true);
+		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.xml"), signXades.getFirst());
 
-		testDocument(signXades);
+		testDocument(signXades.getFirst());
 	}
 
 	@Test
@@ -85,10 +86,10 @@ class DsmsApplicationTests {
 		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
 		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
 		DSSAPI dssapi = new DSSAPI();
-		byte[] signCades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.CAdES_BASELINE_LTA.name(), false);
-		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.p7m"), signCades);
+		Pair<byte[], String> signCades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.CAdES_BASELINE_LTA.name(), false);
+		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.p7m"), signCades.getFirst());
 
-		testDocument(signCades);
+		testDocument(signCades.getFirst());
 	}
 
 	@Test
@@ -98,10 +99,10 @@ class DsmsApplicationTests {
 		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
 		KeyStoreParams keyStoreParams = new KeyStoreParams(keyStore, "good-user-crl-ocsp.p12", "ks-password", List.of(privateKeyParams));
 		DSSAPI dssapi = new DSSAPI();
-		byte[] signJades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.JAdES_BASELINE_LTA.name(), false);
-		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.json"), signJades);
+		Pair<byte[], String> signJades = dssapi.signDocument(unsignedDocument, List.of(keyStoreParams), SignatureLevel.JAdES_BASELINE_LTA.name(), false);
+		FileUtils.writeByteArrayToFile(new File(resourcesPath + "signedXml.json"), signJades.getFirst());
 
-		testDocument(signJades);
+		testDocument(signJades.getFirst());
 	}
 
 	private void testDocument(byte[] document){

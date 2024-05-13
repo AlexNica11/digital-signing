@@ -1,9 +1,12 @@
 package com.ds.dsms.batch.config;
 
 import com.ds.dsms.batch.BatchUtils;
+import com.ds.dsms.batch.service.BatchSignService;
 import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import com.ds.dsms.dss.DSSAPI;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
+import com.ds.dsms.model.SignedDocument;
+import com.ds.dsms.repo.SignedDocumentRepository;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -11,15 +14,19 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.data.util.Pair;
+import org.springframework.lang.NonNullApi;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 public class DocumentTasklet implements Tasklet, StepExecutionListener {
 
     private DocumentPayloadDTO documentPayload;
-    private byte[] signedDocument;
+    private Pair<byte[], String> signedDocument;
+    private SignedDocumentRepository signedDocumentRepository;
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
@@ -43,8 +50,15 @@ public class DocumentTasklet implements Tasklet, StepExecutionListener {
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        System.out.println(signedDocument.length);
-        BatchUtils.FINISHED_JOBS.put(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID), signedDocument);
+        System.out.println(signedDocument.getFirst().length);
+//        BatchUtils.FINISHED_JOBS.put(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID), signedDocument);
+
+        System.out.println(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID) + "\n" + signedDocument.getFirst().length + "\n" + documentPayload.getDocumentName().substring(0, documentPayload.getDocumentName().lastIndexOf('.')) + "_signed" + signedDocument.getSecond());
+        signedDocumentRepository = BatchSignService.getSignedDocumentRepository();
+        signedDocumentRepository.save(new SignedDocument(
+                stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID),
+                signedDocument.getFirst(),
+                documentPayload.getDocumentName().substring(0, documentPayload.getDocumentName().lastIndexOf('.')) + "_signed" + signedDocument.getSecond()));
 
 
         return stepExecution.getExitStatus();
