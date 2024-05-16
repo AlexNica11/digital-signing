@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
         value = "spring.thread-executor",
         havingValue = "virtual"
 )
-public class ConnectionConfiguration {
+public class ExecutionConfiguration {
     //https://www.baeldung.com/spring-6-virtual-threads
 
     @Bean

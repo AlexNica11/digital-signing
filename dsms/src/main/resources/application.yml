@@ -24,3 +24,13 @@ spring:
       ddl-auto: create
   application:
     name: dsms
+
+security:
+  jwt:
+    token:
+      # this has a length of 300 characters
+      secret-key: "WkraJ6Iot7ccgnz52ba7aF4ZzuSCBxKTO5whkkcrQISwPmH4uNJqiAWzeAx3LVdx4twVD8rcKpOOBX1UZ7UT1JtzfaSn6pXUzUu84D2ZB2seH5sm0608Or1NTzpXgOGz1fyKt9jF0YVqNaQ4HhsRFXMsXZV517zHUDdfrSrTPueNfebm9WDJwS2Ns9tQgTcVPKwVdQawcLMXsccLq07NUxKNTGdcUW6PjkN7H36FzXNSyzC5yy6ep1VKCgsLhsbRcxkIZHHvq5ebkEQreXRxd5jIbYpFgVWz9g072rDVKr4N"
+      expiration: 3600000
+
+#server:
+#  port: 9090
