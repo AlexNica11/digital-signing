@@ -32,5 +32,16 @@ security:
       secret-key: "WkraJ6Iot7ccgnz52ba7aF4ZzuSCBxKTO5whkkcrQISwPmH4uNJqiAWzeAx3LVdx4twVD8rcKpOOBX1UZ7UT1JtzfaSn6pXUzUu84D2ZB2seH5sm0608Or1NTzpXgOGz1fyKt9jF0YVqNaQ4HhsRFXMsXZV517zHUDdfrSrTPueNfebm9WDJwS2Ns9tQgTcVPKwVdQawcLMXsccLq07NUxKNTGdcUW6PjkN7H36FzXNSyzC5yy6ep1VKCgsLhsbRcxkIZHHvq5ebkEQreXRxd5jIbYpFgVWz9g072rDVKr4N"
       expiration: 3600000
 
-#server:
+server:
 #  port: 9090
+  ssl:
+    # The format used for the keystore. It could be set to JKS in case it is a JKS file
+    key-store-type: PKCS12
+    # The path to the keystore containing the certificate
+    key-store: classpath:ssl_keystore/signer-key-store.p12
+    # The password used to generate the certificate
+    key-store-password: password
+    # The alias mapped to the certificate
+    key-alias: signer-cert-alias
+    # Only accept HTTPS requests
+    enabled: true
