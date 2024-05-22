@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class JWTTokenFilter extends GenericFilterBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTTokenFilter.class);
-    private static final String BEARER = "Bearer";
+    public static final String BEARER = "Bearer";
     private static final String AUTHORIZATION = "Authorization";
 
     private final DSMSUserDetailsService userDetailsService;

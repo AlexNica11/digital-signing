@@ -1,12 +1,15 @@
 package com.ds.dsms.auth.model;
 
+import com.ds.dsms.model.KeyStoreStorage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,7 +42,9 @@ public class User {
     private List<Role> roles;
 
 
-    // keystores
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @Setter
+    private List<KeyStoreStorage> keyStores;
 
     protected User() {
     }
@@ -49,5 +54,15 @@ public class User {
         this.password = password;
         this.email = email;
         this.roles = roles;
+        this.keyStores = new ArrayList<>();
+    }
+
+    public User(Integer id, String username, String password, String email, List<Role> roles, List<KeyStoreStorage> keyStores) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
+        this.keyStores = keyStores;
     }
 }

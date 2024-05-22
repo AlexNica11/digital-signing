@@ -1,9 +1,13 @@
 package com.ds.dsms.auth;
 
 import com.ds.dsms.auth.jwt.JWTProvider;
+import com.ds.dsms.auth.jwt.JWTTokenFilter;
 import com.ds.dsms.auth.model.Role;
 import com.ds.dsms.auth.model.User;
 import com.ds.dsms.auth.repo.UserRepository;
+import com.ds.dsms.exception.UserException;
+import com.ds.dsms.model.KeyStoreStorage;
+import com.ds.dsms.repo.KeyStoreRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,9 +15,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.KeyStoreException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +30,14 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
+    private final KeyStoreRepository keyStoreRepository;
 
-    public UserService(UserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JWTProvider jwtProvider) {
+    public UserService(UserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JWTProvider jwtProvider, KeyStoreRepository keyStoreRepository) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
+        this.keyStoreRepository = keyStoreRepository;
     }
 
     public Optional<String> login(String username, String password) {
@@ -63,5 +71,24 @@ public class UserService {
     }
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    public void uploadKeyStore(MultipartFile file, String jwtToken) throws IOException, KeyStoreException {
+        String username = jwtProvider.getUsername(jwtToken.replace(JWTTokenFilter.BEARER, "").trim());
+        String id = file.getResource().getFilename();
+        if(keyStoreRepository.existsById(id)){
+            throw new KeyStoreException("Key store already exists");
+        }
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found"));
+        KeyStoreStorage keyStore= keyStoreRepository.save(new KeyStoreStorage(id, file.getBytes(), user));
+        if(user.getKeyStores().isEmpty()){
+            user.setKeyStores(List.of(keyStore));
+        } else {
+            List<KeyStoreStorage> keyStores = user.getKeyStores();
+            keyStores.add(keyStore);
+            user.setKeyStores(keyStores);
+        }
+        userRepository.save(user);
     }
 }

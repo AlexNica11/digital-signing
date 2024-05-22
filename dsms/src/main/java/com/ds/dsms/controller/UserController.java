@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.KeyStoreException;
 import java.util.List;
 
 @RestController
@@ -40,5 +43,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getAllUsers() {
         return userService.getAll();
+    }
+
+    @PostMapping("/uploadKeyStore")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void uploadKeyStore(@RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String jwtToken) throws IOException, KeyStoreException {
+        userService.uploadKeyStore(file, jwtToken);
     }
 }
