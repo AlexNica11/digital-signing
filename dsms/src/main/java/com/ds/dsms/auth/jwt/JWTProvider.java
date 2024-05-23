@@ -27,7 +27,7 @@ public class JWTProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createToken(String username, List<Role> roles) {
+    public String createToken(String username, Set<Role> roles) {
         Date now = new Date();
         Date expiresAt = new Date(now.getTime() + validityInMilliseconds);
         return Jwts.builder()

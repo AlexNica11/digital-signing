@@ -5,9 +5,10 @@ import com.ds.dsms.auth.jwt.JWTTokenFilter;
 import com.ds.dsms.auth.model.Role;
 import com.ds.dsms.auth.model.User;
 import com.ds.dsms.auth.repo.UserRepository;
+import com.ds.dsms.dss.keystore.KeyStoreParams;
 import com.ds.dsms.exception.UserException;
-import com.ds.dsms.model.KeyStoreStorage;
 import com.ds.dsms.repo.KeyStoreRepository;
+import com.ds.dsms.repo.PrivateKeyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,13 +16,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -31,13 +32,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
     private final KeyStoreRepository keyStoreRepository;
+    private final PrivateKeyRepository privateKeyRepository;
 
-    public UserService(UserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JWTProvider jwtProvider, KeyStoreRepository keyStoreRepository) {
+    public UserService(UserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JWTProvider jwtProvider, KeyStoreRepository keyStoreRepository, PrivateKeyRepository privateKeyRepository) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.keyStoreRepository = keyStoreRepository;
+        this.privateKeyRepository = privateKeyRepository;
     }
 
     public Optional<String> login(String username, String password) {
@@ -64,7 +67,7 @@ public class UserService {
                     username,
                     passwordEncoder.encode(password),
                     email,
-                    Arrays.asList(Role.USER)
+                    Set.of(Role.USER)
             )));
         }
         return user;
@@ -73,22 +76,25 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void uploadKeyStore(MultipartFile file, String jwtToken) throws IOException, KeyStoreException {
+    public void uploadKeyStore(KeyStoreParams keyStoreParams, String jwtToken) throws IOException, KeyStoreException {
         String username = jwtProvider.getUsername(jwtToken.replace(JWTTokenFilter.BEARER, "").trim());
-        String id = file.getResource().getFilename();
-        if(keyStoreRepository.existsById(id)){
+        if(keyStoreRepository.existsById(keyStoreParams.getKeyStoreName())){
             throw new KeyStoreException("Key store already exists");
         }
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found"));
-        KeyStoreStorage keyStore= keyStoreRepository.save(new KeyStoreStorage(id, file.getBytes(), user));
-        if(user.getKeyStores().isEmpty()){
-            user.setKeyStores(List.of(keyStore));
+
+        keyStoreParams.setUser(user);
+        KeyStoreParams keyStoreParamsSaved = keyStoreRepository.save(keyStoreParams);
+
+        if(user.getKeyStoreParams().isEmpty()){
+            user.setKeyStoreParams(Set.of(keyStoreParamsSaved));
         } else {
-            List<KeyStoreStorage> keyStores = user.getKeyStores();
-            keyStores.add(keyStore);
-            user.setKeyStores(keyStores);
+            Set<KeyStoreParams> keyStores = user.getKeyStoreParams();
+            keyStores.add(keyStoreParamsSaved);
+            user.setKeyStoreParams(keyStores);
         }
+        
         userRepository.save(user);
     }
 }

@@ -39,6 +39,7 @@ import org.springframework.data.util.Pair;
 import java.io.File;
 import java.security.KeyStore.PasswordProtection;
 import java.util.List;
+import java.util.Set;
 
 public class DSSAPI {
 
@@ -67,12 +68,12 @@ public class DSSAPI {
         PAdESService padesService = new PAdESService(commonCertificateVerifier);
 
         for(KeyStoreParams keyStore : keyStores){
-            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStore(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
+            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStoreBytes(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
 
                 // Preparing parameters for the PAdES signature
                 PAdESSignatureParameters parameters = initSignatureParameters();
 //                parameters.setSignatureLevel(signatureLevel);
-                List<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
+                Set<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
                 for(PrivateKeyParams privateKeyParam : privateKeyParams) {
                     // Set the signing certificate and a certificate chain for the used token
                     DSSPrivateKeyEntry privateKey = null;
@@ -131,10 +132,10 @@ public class DSSAPI {
         XAdESService xadesService = new XAdESService(commonCertificateVerifier);
 
         for(KeyStoreParams keyStore : keyStores) {
-            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStore(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
+            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStoreBytes(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
                 // Preparing parameters for the XAdES signature
                 XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-                List<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
+                Set<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
 
                 for(PrivateKeyParams privateKeyParam : privateKeyParams) {
                     // Set the signing certificate and a certificate chain for the used token
@@ -204,10 +205,10 @@ public class DSSAPI {
         CAdESService cadesService = new CAdESService(commonCertificateVerifier);
 
         for(KeyStoreParams keyStore : keyStores) {
-            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStore(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
+            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStoreBytes(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
                 // Preparing parameters for the CAdES signature
                 CAdESSignatureParameters parameters = new CAdESSignatureParameters();
-                List<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
+                Set<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
 
                 for(PrivateKeyParams privateKeyParam : privateKeyParams) {
                     // Set the signing certificate and a certificate chain for the used token
@@ -279,10 +280,10 @@ public class DSSAPI {
         JAdESService jadesService = new JAdESService(commonCertificateVerifier);
 
         for(KeyStoreParams keyStore : keyStores) {
-            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStore(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
+            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStoreBytes(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
                 // Preparing parameters for the JAdES signature
                 JAdESSignatureParameters parameters = new JAdESSignatureParameters();
-                List<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
+                Set<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
 
                 for(PrivateKeyParams privateKeyParam : privateKeyParams) {
                     // Set the signing certificate and a certificate chain for the used token

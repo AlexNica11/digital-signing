@@ -34,8 +34,8 @@ public class DocumentTasklet implements Tasklet, StepExecutionListener {
         documentPayload = BatchUtils.getDocumentFromCache(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID));
         List<KeyStoreParams> keyStoreParams = documentPayload.getKeyStoreParams();
         for(KeyStoreParams keyStoreParam : keyStoreParams) {
-            if(keyStoreParam.getKeyStore().length == 0){
-                keyStoreParam.setKeyStore(BatchUtils.getKeyStore(keyStoreParam.getKeyStoreName()));
+            if(keyStoreParam.getKeyStoreBytes().length == 0){
+                keyStoreParam.setKeyStoreBytes(BatchUtils.getKeyStore(keyStoreParam.getKeyStoreName()));
             }
         }
     }

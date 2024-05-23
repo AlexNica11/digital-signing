@@ -3,7 +3,9 @@ package com.ds.dsms.controller;
 import com.ds.dsms.auth.UserService;
 import com.ds.dsms.auth.dto.LoginDTO;
 import com.ds.dsms.auth.model.User;
+import com.ds.dsms.dss.keystore.KeyStoreParams;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +49,7 @@ public class UserController {
 
     @PostMapping("/uploadKeyStore")
     @ResponseStatus(HttpStatus.CREATED)
-    public void uploadKeyStore(@RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String jwtToken) throws IOException, KeyStoreException {
-        userService.uploadKeyStore(file, jwtToken);
+    public void uploadKeyStore(@RequestBody @Valid KeyStoreParams keyStoreParams, @RequestHeader("Authorization") String jwtToken) throws IOException, KeyStoreException {
+        userService.uploadKeyStore(keyStoreParams, jwtToken);
     }
 }
