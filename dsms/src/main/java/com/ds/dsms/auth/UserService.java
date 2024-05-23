@@ -6,6 +6,8 @@ import com.ds.dsms.auth.model.Role;
 import com.ds.dsms.auth.model.User;
 import com.ds.dsms.auth.repo.UserRepository;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
+import com.ds.dsms.dss.keystore.PrivateKeyParams;
+import com.ds.dsms.exception.KeyStoreException;
 import com.ds.dsms.exception.UserException;
 import com.ds.dsms.repo.KeyStoreRepository;
 import com.ds.dsms.repo.PrivateKeyRepository;
@@ -18,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.security.KeyStoreException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -76,13 +77,17 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void uploadKeyStore(KeyStoreParams keyStoreParams, String jwtToken) throws IOException, KeyStoreException {
-        String username = jwtProvider.getUsername(jwtToken.replace(JWTTokenFilter.BEARER, "").trim());
+    public void uploadKeyStore(KeyStoreParams keyStoreParams, String jwtToken) {
+        String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
         if(keyStoreRepository.existsById(keyStoreParams.getKeyStoreName())){
             throw new KeyStoreException("Key store already exists");
         }
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found"));
+
+        for(PrivateKeyParams privateKeyParams : keyStoreParams.getPrivateKeyParams()){
+            privateKeyParams.setKeyStoreParams(keyStoreParams);
+        }
 
         keyStoreParams.setUser(user);
         KeyStoreParams keyStoreParamsSaved = keyStoreRepository.save(keyStoreParams);
@@ -94,7 +99,7 @@ public class UserService {
             keyStores.add(keyStoreParamsSaved);
             user.setKeyStoreParams(keyStores);
         }
-        
+
         userRepository.save(user);
     }
 }

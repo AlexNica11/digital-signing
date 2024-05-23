@@ -32,10 +32,10 @@ public class SignController {
     @PostMapping("/sign")
     @ResponseStatus(HttpStatus.ACCEPTED)
 //    public Long signDocument(@Validated @RequestBody DocumentPayloadDTO documentPayload) {
-    public ResponseEntity<byte[]> signDocument(@Validated @RequestBody DocumentPayloadDTO documentPayload) {
+    public ResponseEntity<byte[]> signDocument(@Validated @RequestBody DocumentPayloadDTO documentPayload, @RequestHeader("Authorization") String jwtToken) {
         String jobId = documentPayload.getDocumentName() + DigestUtils.sha256Hex(String.valueOf(System.currentTimeMillis()));
 //        System.out.println(documentPayload.getDocumentName());
-        Long jobIdLong = signService.signJob(jobId, documentPayload);
+        Long jobIdLong = signService.signJob(jobId, documentPayload, jwtToken);
 //        System.out.println("jobIdLong: " + jobIdLong);
         System.out.println("Cache size: " + BatchUtils.getDocumentCache().size());
 //        return new ResponseEntity<>(BatchUtils.FINISHED_JOBS.get(jobId), HttpStatus.CREATED);

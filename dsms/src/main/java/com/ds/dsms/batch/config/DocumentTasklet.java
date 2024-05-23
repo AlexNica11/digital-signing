@@ -21,6 +21,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.lang.NonNullApi;
 
 import java.util.List;
+import java.util.Set;
 
 public class DocumentTasklet implements Tasklet, StepExecutionListener {
 
@@ -32,18 +33,17 @@ public class DocumentTasklet implements Tasklet, StepExecutionListener {
     public void beforeStep(StepExecution stepExecution) {
 //        documentPayload = (DocumentPayloadDTO) Objects.requireNonNull(stepExecution.getJobParameters().getParameter(BatchUtils.BATCH_JOB_ID)).getValue();
         documentPayload = BatchUtils.getDocumentFromCache(stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID));
-        List<KeyStoreParams> keyStoreParams = documentPayload.getKeyStoreParams();
-        for(KeyStoreParams keyStoreParam : keyStoreParams) {
-            if(keyStoreParam.getKeyStoreBytes().length == 0){
-                keyStoreParam.setKeyStoreBytes(BatchUtils.getKeyStore(keyStoreParam.getKeyStoreName()));
-            }
-        }
+//        KeyStoreParams keyStoreParams = documentPayload.getKeyStoreParams();
+//        if(keyStoreParams.getKeyStoreBytes().length == 0){
+//            keyStoreParams.setKeyStoreBytes(BatchUtils.getKeyStore(keyStoreParams.getKeyStoreName()));
+//        }
+
     }
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         DSSAPI dssApi = new DSSAPI();
-        signedDocument = dssApi.signDocument(documentPayload.getDocument(), documentPayload.getKeyStoreParams(), documentPayload.getSignature(), documentPayload.isExtendSignature());
+        signedDocument = dssApi.signDocument(documentPayload.getDocument(), Set.of(documentPayload.getKeyStoreParams()), documentPayload.getSignature(), documentPayload.isExtendSignature());
 
         return RepeatStatus.FINISHED;
     }

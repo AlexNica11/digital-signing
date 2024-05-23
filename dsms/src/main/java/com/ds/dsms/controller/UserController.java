@@ -13,7 +13,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.KeyStoreException;
 import java.util.List;
 
 @RestController
@@ -36,7 +35,7 @@ public class UserController {
     @PostMapping("/signup")
 //    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public User signup(@RequestBody @Valid LoginDTO loginDto){
+    public User signup(@RequestBody @Valid LoginDTO loginDto) {
         return userService.signup(loginDto.getUsername(), loginDto.getPassword(), loginDto.getEmail())
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.BAD_REQUEST,"User already exists"));
     }
@@ -49,7 +48,7 @@ public class UserController {
 
     @PostMapping("/uploadKeyStore")
     @ResponseStatus(HttpStatus.CREATED)
-    public void uploadKeyStore(@RequestBody @Valid KeyStoreParams keyStoreParams, @RequestHeader("Authorization") String jwtToken) throws IOException, KeyStoreException {
+    public void uploadKeyStore(@RequestBody @Valid KeyStoreParams keyStoreParams, @RequestHeader("Authorization") String jwtToken) {
         userService.uploadKeyStore(keyStoreParams, jwtToken);
     }
 }

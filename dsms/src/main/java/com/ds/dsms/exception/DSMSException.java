@@ -1,8 +1,9 @@
 package com.ds.dsms.exception;
 
-public class UserException extends DSMSException {
+public class DSMSException extends RuntimeException {
     private static final long serialVersionUID = 1L;
-    public UserException(String message) {
+    public DSMSException(String message) {
         super(message);
     }
 }
+

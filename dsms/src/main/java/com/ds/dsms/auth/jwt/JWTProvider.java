@@ -52,6 +52,10 @@ public class JWTProvider {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getSubject();
     }
 
+    public String getUsernameFromBearerToken(String token) {
+        return getUsername(token.replace(JWTTokenFilter.BEARER, "").trim());
+    }
+
     public List<GrantedAuthority> getRoles(String token) {
         List<Map<String, String>> roleClaims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(ROLES_KEY, List.class);
         return roleClaims.stream().map(roleClaim -> new SimpleGrantedAuthority(roleClaim.get("authority"))).collect(Collectors.toList());

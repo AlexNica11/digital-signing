@@ -21,11 +21,11 @@ public class DocumentPayloadDTO implements Serializable {
     private final boolean extendSignature;
 
     @NonNull
-    private final List<KeyStoreParams> keyStoreParams;
+    private final KeyStoreParams keyStoreParams;
 
     private final boolean encrypt;
 
-    public DocumentPayloadDTO(byte @NonNull [] document, @NonNull String documentName, @NonNull String signature, boolean extendSignature, @NonNull List<KeyStoreParams> keyStoreParams, boolean encrypt) {
+    public DocumentPayloadDTO(byte @NonNull [] document, @NonNull String documentName, @NonNull String signature, boolean extendSignature, @NonNull KeyStoreParams keyStoreParams, boolean encrypt) {
         this.document = document;
         this.documentName = documentName;
         this.signature = signature;
