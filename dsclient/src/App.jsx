@@ -2,7 +2,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AuthProvider from "./auth/AuthProvider.jsx";
 import Login from "./auth/Login.jsx";
 import PrivateRoute from "./auth/PrivateRoute.jsx";
-import Dashboard from "./auth/Dashboard.jsx";
+import Dashboard from "./routes/Dashboard.jsx";
+import ErrorPage from "./routes/ErrorPage.jsx";
+import ProfilePage from "./routes/ProfilePage.jsx";
+import SignPage from "./routes/SignPage.jsx";
+import UploadKeyStorePage from "./routes/UploadKeyStorePage.jsx";
 
 
 function App() {
@@ -12,8 +16,12 @@ function App() {
                 <AuthProvider>
                     <Routes>
                         <Route path="/login" element={<Login />} />
-                        <Route element={<PrivateRoute />}>
-                            <Route path="/dashboard" element={<Dashboard />} />
+                        <Route element={<PrivateRoute />} errorElement={ErrorPage}>
+                            <Route path="/" element={<Dashboard />}>
+                                <Route path="/profile" element={<ProfilePage/>}/>
+                                <Route path="/signDocument" element={<SignPage/>}/>
+                                <Route path="/uploadKeyStore" element={<UploadKeyStorePage/>}/>
+                            </Route>
                         </Route>
                         {/* Other routes */}
                     </Routes>

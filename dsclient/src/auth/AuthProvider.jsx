@@ -7,7 +7,7 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(secureLocalStorage.getItem("site") || "");
+    const [token, setToken] = useState(secureLocalStorage.getItem("securityToken") || "");
     const navigate = useNavigate();
     const loginAction = async (data) => {
         try {
@@ -33,8 +33,8 @@ const AuthProvider = ({ children }) => {
             if (res.jwt) {
                 setUser(data.username);
                 setToken(res.jwt);
-                secureLocalStorage.setItem("site", res.jwt);
-                navigate("/dashboard");
+                secureLocalStorage.setItem("securityToken", res.jwt);
+                navigate("/");
                 return;
             }
             throw new Error(res.message);
@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
     const logOut = () => {
         setUser(null);
         setToken("");
-        secureLocalStorage.removeItem("site");
+        secureLocalStorage.removeItem("securityToken");
         navigate("/login");
     };
 
