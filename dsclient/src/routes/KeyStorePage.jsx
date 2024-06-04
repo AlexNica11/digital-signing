@@ -1,43 +1,41 @@
-import {NavLink} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 
-export default function ProfilePage(){
-    const [keyStores, setKeyStores] = useState([]);
+export default function KeyStorePage(){
+    let {keyStoreName} = useParams();
+    const [pkParams, setPkParams] = useState([]);
 
     useEffect(() => {
         axios({
             method: 'post',
-            url: `/api/users/keyStores`,
+            url: `/api/users/privateKeyParams`,
+            data: keyStoreName,
             headers: {
                 Authorization: "Bearer " + secureLocalStorage.getItem("securityToken"),
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'text/plain'
             }
         }).then((res) => {
             console.log(res.data);
-            setKeyStores(res.data);
+            setPkParams(res.data);
         }).catch((error) => {
             console.error(error);
         });
     }, [])
 
+    console.log(keyStoreName);
+
     return (
         <>
-            <h1>Profile</h1>
+            <h1>KeyStore {keyStoreName}</h1>
             <div>
-
-            </div>
-            <div>
-                <NavLink to={"/uploadKeystore"}>Upload KeyStore</NavLink>
-            </div>
-            <div>
-                <label>Key Stores</label>
+                <label>Key Store Entries</label>
                 <ul>
-                    {keyStores.map((ks) =>
-                        <li key={ks}>
-                            <NavLink to={"/keyStore/" + ks}>{ks}</NavLink>
+                    {pkParams.map((pk) =>
+                        <li key={pk}>
+                            <label>{pk}</label>
                         </li>
                     )}
                 </ul>

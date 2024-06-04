@@ -7,6 +7,7 @@ import ErrorPage from "./routes/ErrorPage.jsx";
 import ProfilePage from "./routes/ProfilePage.jsx";
 import SignPage from "./routes/SignPage.jsx";
 import UploadKeyStorePage from "./routes/UploadKeyStorePage.jsx";
+import KeyStorePage from "./routes/KeyStorePage.jsx";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                                 <Route path="/profile" element={<ProfilePage/>}/>
                                 <Route path="/signDocument" element={<SignPage/>}/>
                                 <Route path="/uploadKeyStore" element={<UploadKeyStorePage/>}/>
+                                <Route path="/keyStore/:keyStoreName" element={<KeyStorePage/>}/>
                             </Route>
                         </Route>
                         {/* Other routes */}
