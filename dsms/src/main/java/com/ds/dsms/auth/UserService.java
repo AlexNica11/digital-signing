@@ -20,10 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -78,12 +75,13 @@ public class UserService {
     }
 
     public void uploadKeyStore(KeyStoreParams keyStoreParams, String jwtToken) {
-        String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
+        LOGGER.info("New keystore attempting to upload");
+
         if(keyStoreRepository.existsById(keyStoreParams.getKeyStoreName())){
             throw new KeyStoreException("Key store already exists");
         }
 
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found"));
+        User user = getUserFromToken(jwtToken);
 
         for(PrivateKeyParams privateKeyParams : keyStoreParams.getPrivateKeyParams()){
             privateKeyParams.setKeyStoreParams(keyStoreParams);
@@ -101,5 +99,34 @@ public class UserService {
         }
 
         userRepository.save(user);
+    }
+
+    public List<String> getKeyStores(String jwtToken){
+        List<KeyStoreParams> keyStores = keyStoreRepository.findByUser(getUserFromToken(jwtToken));
+        List<String> nameList = new ArrayList<>();
+
+        for(KeyStoreParams keyStore : keyStores){
+            nameList.add(keyStore.getKeyStoreName());
+        }
+
+        return nameList;
+    }
+
+    public List<String> getPrivateKeyParams(String keyStoreName, String jwtToken){
+        KeyStoreParams keyStoreParams = keyStoreRepository.findByKeyStoreNameAndUser(keyStoreName, getUserFromToken(jwtToken)).orElseThrow(() -> new KeyStoreException("Key store not found"));
+        List<String> nameList = new ArrayList<>();
+
+        for(PrivateKeyParams privateKeyParam : keyStoreParams.getPrivateKeyParams()){
+            nameList.add(privateKeyParam.getAlias());
+        }
+
+        return nameList;
+    }
+
+
+    private User getUserFromToken(String jwtToken) {
+        String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found"));
+        return user;
     }
 }

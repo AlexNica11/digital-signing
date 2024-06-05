@@ -80,6 +80,7 @@ public class BatchSignService {
                 || documentPayload.getKeyStoreParams().getKeyStoreBytes().length == 0){
             User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found"));
             KeyStoreParams keyStoreParams = keyStoreRepository.findByKeyStoreNameAndUser(documentPayload.getKeyStoreParams().getKeyStoreName(), user).orElseThrow(() -> new KeyStoreException("Key store not found"));
+            documentPayload.getKeyStoreParams().setKeyStorePassword(keyStoreParams.getKeyStorePassword());
             documentPayload.getKeyStoreParams().setKeyStoreBytes(keyStoreParams.getKeyStoreBytes());
             Set<PrivateKeyParams> privateKeyParams = new HashSet<>();
 

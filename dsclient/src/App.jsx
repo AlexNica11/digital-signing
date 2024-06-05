@@ -5,7 +5,7 @@ import PrivateRoute from "./auth/PrivateRoute.jsx";
 import Dashboard from "./routes/Dashboard.jsx";
 import ErrorPage from "./routes/ErrorPage.jsx";
 import ProfilePage from "./routes/ProfilePage.jsx";
-import SignPage from "./routes/SignPage.jsx";
+import SignDocumentPage from "./routes/SignDocumentPage.jsx";
 import UploadKeyStorePage from "./routes/UploadKeyStorePage.jsx";
 import KeyStorePage from "./routes/KeyStorePage.jsx";
 
@@ -20,7 +20,7 @@ function App() {
                         <Route element={<PrivateRoute />} errorElement={ErrorPage}>
                             <Route path="/" element={<Dashboard />}>
                                 <Route path="/profile" element={<ProfilePage/>}/>
-                                <Route path="/signDocument" element={<SignPage/>}/>
+                                <Route path="/signDocument" element={<SignDocumentPage/>}/>
                                 <Route path="/uploadKeyStore" element={<UploadKeyStorePage/>}/>
                                 <Route path="/keyStore/:keyStoreName" element={<KeyStorePage/>}/>
                             </Route>
