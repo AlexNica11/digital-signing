@@ -19,6 +19,8 @@ public class BatchUtils {
 
     public static String BATCH_PAYLOAD = "payload";
     public static String BATCH_JOB_ID = "jobId";
+    public static String BATCH_USERNAME = "username";
+    public static String BATCH_DOCUMENT_NAME = "documentName";
 
     public static final Map<String, byte[]> FINISHED_JOBS = new ConcurrentHashMap<>();
 

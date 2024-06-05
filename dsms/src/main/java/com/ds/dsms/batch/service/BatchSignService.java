@@ -4,12 +4,13 @@ import com.ds.dsms.auth.jwt.JWTProvider;
 import com.ds.dsms.auth.model.User;
 import com.ds.dsms.auth.repo.UserRepository;
 import com.ds.dsms.batch.BatchUtils;
-import com.ds.dsms.controller.SignController;
+import com.ds.dsms.batch.config.BatchConfiguration;
 import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
 import com.ds.dsms.dss.keystore.PrivateKeyParams;
 import com.ds.dsms.exception.KeyStoreException;
 import com.ds.dsms.exception.UserException;
+import com.ds.dsms.model.SignedDocument;
 import com.ds.dsms.repo.KeyStoreRepository;
 import com.ds.dsms.repo.PrivateKeyRepository;
 import com.ds.dsms.repo.SignedDocumentRepository;
@@ -17,22 +18,21 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class BatchSignService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BatchSignService.class);
 
     private final JobLauncher jobLauncher;
+    private final JobExplorer jobExplorer;
     private final Job job;
     private final JWTProvider jwtProvider;
     private final UserRepository userRepository;
@@ -42,8 +42,9 @@ public class BatchSignService {
     @Getter
     private static SignedDocumentRepository signedDocumentRepository = null;
 
-    public BatchSignService(JobLauncher jobLauncher, Job job, JWTProvider jwtProvider, UserRepository userRepository, KeyStoreRepository keyStoreRepository, PrivateKeyRepository privateKeyRepository, SignedDocumentRepository signedDocumentRepository) {
+    public BatchSignService(JobLauncher jobLauncher, JobExplorer jobExplorer, Job job, JWTProvider jwtProvider, UserRepository userRepository, KeyStoreRepository keyStoreRepository, PrivateKeyRepository privateKeyRepository, SignedDocumentRepository signedDocumentRepository) {
         this.jobLauncher = jobLauncher;
+        this.jobExplorer = jobExplorer;
         this.job = job;
         this.jwtProvider = jwtProvider;
         this.userRepository = userRepository;
@@ -57,12 +58,15 @@ public class BatchSignService {
             throw new KeyStoreException("Only 1 signature allowed per request");
         }
 
+        String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString(BatchUtils.BATCH_JOB_ID, jobId, true)
+                .addString(BatchUtils.BATCH_USERNAME, username, true)
+                .addString(BatchUtils.BATCH_DOCUMENT_NAME, documentPayload.getDocumentName(), false)
 //                .addJobParameter(BatchUtils.BATCH_PAYLOAD, documentPayload, DocumentPayloadDTO.class)
                 .toJobParameters();
 
-        addSignaturesToPayload(documentPayload, jwtProvider.getUsernameFromBearerToken(jwtToken));
+        addSignaturesToPayload(documentPayload, username);
 //        BatchUtils.UNFINISHED_JOBS.put(jobId, documentPayload);
         BatchUtils.getDocumentCache().put(jobId, documentPayload);
 
@@ -90,5 +94,41 @@ public class BatchSignService {
 
             documentPayload.getKeyStoreParams().setPrivateKeyParams(privateKeyParams);
         }
+    }
+
+    public List<Map<String,String>> getRunningSigningJobs(String jwtToken){
+        String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
+        Set<JobExecution> jobExecutions = jobExplorer.findRunningJobExecutions(BatchConfiguration.SIGNING_JOB_NAME);
+        return getJobsFromJobExecutions(jobExecutions, username);
+    }
+
+    public List<Map<String,String>> getCompletedSigningJobs(String jwtToken){
+        String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
+        List<Map<String,String>> completedJobs = new ArrayList<>();
+        List<SignedDocument> signedDocuments = signedDocumentRepository.findByUsername(username);
+        for(SignedDocument signedDocument : signedDocuments){
+            Map<String, String> jobDetails = new HashMap<>();
+            jobDetails.put(BatchUtils.BATCH_JOB_ID, signedDocument.getJobId());
+            jobDetails.put(BatchUtils.BATCH_DOCUMENT_NAME, signedDocument.getDocumentName());
+            completedJobs.add(jobDetails);
+        }
+
+        return completedJobs;
+    }
+
+    private List<Map<String,String>> getJobsFromJobExecutions(Collection<JobExecution> jobExecutions, String username){
+        List<Map<String,String>> jobs = new ArrayList<>();
+        for(JobExecution jobExecution : jobExecutions){
+            JobParameters jobParameters = jobExecution.getJobParameters();
+
+            if(username.equals(jobParameters.getString(BatchUtils.BATCH_USERNAME))) {
+                Map<String, String> jobDetails = new HashMap<>();
+                jobDetails.put(BatchUtils.BATCH_JOB_ID, jobParameters.getString(BatchUtils.BATCH_JOB_ID));
+                jobDetails.put(BatchUtils.BATCH_DOCUMENT_NAME, jobParameters.getString(BatchUtils.BATCH_DOCUMENT_NAME));
+                jobs.add(jobDetails);
+            }
+        }
+
+        return jobs;
     }
 }

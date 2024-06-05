@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "PRIVATE_KEY_PARAMS")
 @Getter
+@Setter
 @AllArgsConstructor
 public class PrivateKeyParams implements Serializable {
     @Id
@@ -25,7 +26,7 @@ public class PrivateKeyParams implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "keyStoreParams_keyStoreName")
-    @Setter
+    @JsonIgnore
     private KeyStoreParams keyStoreParams;
 
     protected PrivateKeyParams() {

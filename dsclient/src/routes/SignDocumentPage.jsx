@@ -4,6 +4,7 @@ import axios from "axios";
 
 export default function SignDocumentPage(){
     const [selectedFile, setSelectedFile] = useState(null);
+    const [signatures, setSignatures] = useState(["CAdES_BASELINE_"]);
     const [signatureLevel, setSignatureLevel] = useState("B");
 
     const [params, setParams] = useState({
@@ -13,10 +14,10 @@ export default function SignDocumentPage(){
         privateKeyAlias: ""
     });
 
-    const setSignature = (signature) => {
+    const handleSignature = (signature) => {
         setParams((prev) => ({
             ...prev,
-            ["signature"]: signature,
+            ["signature"]: signature.target.value,
         }));
     }
 
@@ -27,18 +28,34 @@ export default function SignDocumentPage(){
         setSelectedFile(file);
         switch (file.type){
             case "application/pdf":
-                setSignature("PAdES_BASELINE_");
+                setSignatures(["PAdES_BASELINE_"]);
+                setParams((prev) => ({
+                    ...prev,
+                    ["signature"]: "PAdES_BASELINE_",
+                }));
                 break;
             case "application/xml":
             case "text/xml":
             case "application/atom+xml":
-                setSignature("XAdES_BASELINE_");
+                setSignatures(["XAdES_BASELINE_"]);
+                setParams((prev) => ({
+                    ...prev,
+                    ["signature"]: "XAdES_BASELINE_",
+                }));
                 break;
             case "application/json":
-                setSignature("JAdES_BASELINE_");
+                setSignatures(["JAdES_BASELINE_", "CAdES_BASELINE_"]);
+                setParams((prev) => ({
+                    ...prev,
+                    ["signature"]: "JAdES_BASELINE_",
+                }));
                 break;
             default:
-                setSignature("CAdES_BASELINE_");
+                setSignatures(["CAdES_BASELINE_", "JAdES_BASELINE_"]);
+                setParams((prev) => ({
+                    ...prev,
+                    ["signature"]: "CAdES_BASELINE_",
+                }));
         }
     };
 
@@ -111,7 +128,12 @@ export default function SignDocumentPage(){
                     </button>
                     <div className="form_control">
                         <label htmlFor="signature">signature</label>
-                        <select name="signature" id="signature" onChange={handleSignatureLevel}>
+                        <select name="signature" id="signature" onChange={handleSignature}>
+                            {signatures.map((sig) =>
+                                <option key={sig} value={sig}>{sig}</option>
+                            )}
+                        </select>
+                        <select name="signatureLevel" id="signatureLevel" onChange={handleSignatureLevel}>
                             <option value="B">B</option>
                             <option value="T">T</option>
                             <option value="LT">LT</option>

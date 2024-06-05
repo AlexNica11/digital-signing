@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface SignedDocumentRepository extends JpaRepository<SignedDocument, Integer> {
 
     List<SignedDocument> findByDocumentName(String documentName);
+    List<SignedDocument> findByUsername(String username);
     Optional<SignedDocument> findByJobId(String jobId);
     Integer deleteByJobId(String jobId);
 }

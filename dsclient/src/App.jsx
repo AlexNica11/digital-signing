@@ -8,6 +8,7 @@ import ProfilePage from "./routes/ProfilePage.jsx";
 import SignDocumentPage from "./routes/SignDocumentPage.jsx";
 import UploadKeyStorePage from "./routes/UploadKeyStorePage.jsx";
 import KeyStorePage from "./routes/KeyStorePage.jsx";
+import DocumentStatusPage from "./routes/DocumentStatusPage.jsx";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                             <Route path="/" element={<Dashboard />}>
                                 <Route path="/profile" element={<ProfilePage/>}/>
                                 <Route path="/signDocument" element={<SignDocumentPage/>}/>
+                                <Route path="/documentStatus" element={<DocumentStatusPage/>}/>
                                 <Route path="/uploadKeyStore" element={<UploadKeyStorePage/>}/>
                                 <Route path="/keyStore/:keyStoreName" element={<KeyStorePage/>}/>
                             </Route>

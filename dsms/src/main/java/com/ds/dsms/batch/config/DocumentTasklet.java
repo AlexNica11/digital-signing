@@ -58,6 +58,7 @@ public class DocumentTasklet implements Tasklet, StepExecutionListener {
         signedDocumentRepository.save(new SignedDocument(
                 stepExecution.getJobParameters().getString(BatchUtils.BATCH_JOB_ID),
                 signedDocument.getFirst(),
+                stepExecution.getJobParameters().getString(BatchUtils.BATCH_USERNAME),
                 documentPayload.getDocumentName().substring(0, documentPayload.getDocumentName().lastIndexOf('.')) + "_signed" + signedDocument.getSecond()));
 
 

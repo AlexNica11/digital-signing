@@ -16,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "KEY_STORE_PARAMS")
 @Getter
+@Setter
 @AllArgsConstructor
 public class KeyStoreParams {
 
@@ -26,20 +27,18 @@ public class KeyStoreParams {
 
     @Column
     @NotEmpty
-    @Setter
     private byte[] keyStoreBytes;
 
     @Column
     private String keyStorePassword;
 
     @NotEmpty
-    @Setter
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "keyStoreParams", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PrivateKeyParams> privateKeyParams;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    @Setter
+    @JsonIgnore
     private User user;
 
 

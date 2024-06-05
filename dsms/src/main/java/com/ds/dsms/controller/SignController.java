@@ -4,6 +4,7 @@ import com.ds.dsms.batch.service.BatchSignService;
 import com.ds.dsms.batch.BatchUtils;
 import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
+import com.ds.dsms.exception.DSMSException;
 import com.ds.dsms.model.SignedDocument;
 import com.ds.dsms.repo.SignedDocumentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,13 +12,15 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -66,15 +69,50 @@ public class SignController {
     }
 
     @PostMapping("/getDocument")
-    @ResponseStatus(HttpStatus.CREATED) // maybe another status
+//    @ResponseStatus(HttpStatus.CREATED) // maybe another status
     public ResponseEntity<byte[]> getDocument(@RequestBody String jobId){
         Optional<SignedDocument> signedDoc = signedDocumentRepository.findByJobId(jobId);
         if (signedDoc.isPresent()) {
             signedDocumentRepository.deleteByJobId(jobId);
-            return new ResponseEntity<>(signedDoc.get().getData(), HttpStatus.CREATED);
+            SignedDocument signedDocument = signedDoc.get();
+//            return new ResponseEntity<>(signedDoc.get().getData(), HttpStatus.CREATED);
+            MediaType mediaType ;
+            if(signedDocument.getDocumentName().endsWith(".pdf")){
+                mediaType = MediaType.APPLICATION_PDF;
+            } else if(signedDocument.getDocumentName().endsWith(".xml")){
+                mediaType = MediaType.APPLICATION_XML;
+            } else if(signedDocument.getDocumentName().endsWith(".json")){
+                mediaType = MediaType.APPLICATION_JSON;
+            } else {
+                mediaType = MediaType.valueOf("application/pkcs7-mime");
+            }
+            return ResponseEntity.ok().contentType(mediaType).body(signedDocument.getData());
         }
-        return new ResponseEntity<>(new byte[0], HttpStatus.CREATED);
+        return new ResponseEntity<>(new byte[0], HttpStatus.NOT_FOUND);
     }
 
+    @PostMapping("/signingJobs")
+    @ResponseStatus(HttpStatus.FOUND)
+    public List<Map<String,String>> getSigningJobs(@RequestBody String jobSelection, @RequestHeader("Authorization") String jwtToken){
+        return switch (jobSelection) {
+            case "running" -> signService.getRunningSigningJobs(jwtToken);
+            case "completed" -> signService.getCompletedSigningJobs(jwtToken);
+//            case "all" -> signService.getAllJobs(jwtToken);
+            default ->
+                    throw new DSMSException("Job Selection not supported, please use one of running, completed, all");
+        };
+    }
+
+    @PostMapping("/runningSigningJobs")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<Map<String,String>> getRunningSigningJobs(@RequestHeader("Authorization") String jwtToken){
+        return signService.getRunningSigningJobs(jwtToken);
+    }
+
+    @PostMapping("/completedSigningJobs")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<Map<String,String>> getCompletedSigningJobs(@RequestHeader("Authorization") String jwtToken){
+        return signService.getCompletedSigningJobs(jwtToken);
+    }
 
 }

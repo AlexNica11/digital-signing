@@ -20,6 +20,9 @@ public class BatchConfiguration {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
 
+    public static final String SIGNING_JOB_NAME = "signingJob";
+    public static final String SIGNING_STEP_NAME = "signingStep";
+
     public BatchConfiguration(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         this.jobRepository = jobRepository;
         this.transactionManager = transactionManager;
@@ -27,14 +30,14 @@ public class BatchConfiguration {
 
     @Bean
     public Step signingStep(){
-        return new StepBuilder("signingStep", jobRepository)
+        return new StepBuilder(SIGNING_STEP_NAME, jobRepository)
                 .tasklet(new DocumentTasklet(), transactionManager)
                 .build();
     }
 
     @Bean
     public Job signingJob(){
-        return new JobBuilder("signingJob", jobRepository)
+        return new JobBuilder(SIGNING_JOB_NAME, jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(signingStep())
                 .build();
