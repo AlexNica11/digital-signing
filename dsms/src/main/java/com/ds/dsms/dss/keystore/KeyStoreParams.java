@@ -2,6 +2,7 @@ package com.ds.dsms.dss.keystore;
 
 import com.ds.dsms.auth.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,9 +28,11 @@ public class KeyStoreParams {
 
     @Column
     @NotEmpty
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private byte[] keyStoreBytes;
 
     @Column
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String keyStorePassword;
 
     @NotEmpty
