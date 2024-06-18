@@ -2,11 +2,9 @@ package com.ds.dsms.auth.model;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import java.io.Serializable;
-
 public enum Role implements GrantedAuthority {
-    ADMIN,
-    USER;
+    ROLE_ADMIN,
+    ROLE_USER;
 
     @Override
     public String toString() {

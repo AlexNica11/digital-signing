@@ -1,7 +1,6 @@
 package com.ds.dsms.auth;
 
 import com.ds.dsms.auth.jwt.JWTProvider;
-import com.ds.dsms.auth.jwt.JWTTokenFilter;
 import com.ds.dsms.auth.model.Role;
 import com.ds.dsms.auth.model.User;
 import com.ds.dsms.auth.repo.UserRepository;
@@ -19,7 +18,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -65,7 +63,7 @@ public class UserService {
                     username,
                     passwordEncoder.encode(password),
                     email,
-                    Set.of(Role.USER)
+                    Set.of(Role.ROLE_USER)
             )));
         }
         return user;
@@ -122,7 +120,6 @@ public class UserService {
 
         return nameList;
     }
-
 
     private User getUserFromToken(String jwtToken) {
         String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
