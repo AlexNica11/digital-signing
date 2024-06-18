@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface PrivateKeyRepository extends JpaRepository<PrivateKeyParams, String> {
+public interface PrivateKeyRepository extends JpaRepository<PrivateKeyParams, Integer> {
     Optional<PrivateKeyParams> findByAliasAndKeyStoreParams(String id, KeyStoreParams keyStoreParams);
 }

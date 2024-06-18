@@ -75,11 +75,11 @@ public class UserService {
     public void uploadKeyStore(KeyStoreParams keyStoreParams, String jwtToken) {
         LOGGER.info("New keystore attempting to upload");
 
-        if(keyStoreRepository.existsById(keyStoreParams.getKeyStoreName())){
+        User user = getUserFromToken(jwtToken);
+
+        if(keyStoreRepository.existsByKeyStoreNameAndUser(keyStoreParams.getKeyStoreName(), user)){
             throw new KeyStoreException("Key store already exists");
         }
-
-        User user = getUserFromToken(jwtToken);
 
         for(PrivateKeyParams privateKeyParams : keyStoreParams.getPrivateKeyParams()){
             privateKeyParams.setKeyStoreParams(keyStoreParams);
@@ -87,16 +87,6 @@ public class UserService {
 
         keyStoreParams.setUser(user);
         KeyStoreParams keyStoreParamsSaved = keyStoreRepository.save(keyStoreParams);
-
-        if(user.getKeyStoreParams().isEmpty()){
-            user.setKeyStoreParams(Set.of(keyStoreParamsSaved));
-        } else {
-            Set<KeyStoreParams> keyStores = user.getKeyStoreParams();
-            keyStores.add(keyStoreParamsSaved);
-            user.setKeyStoreParams(keyStores);
-        }
-
-        userRepository.save(user);
     }
 
     public List<String> getKeyStores(String jwtToken){

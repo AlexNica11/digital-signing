@@ -22,6 +22,11 @@ import java.util.Set;
 public class KeyStoreParams {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    @JsonIgnore
+    private Integer id;
+
     @Column
     @NotBlank
     private String keyStoreName;

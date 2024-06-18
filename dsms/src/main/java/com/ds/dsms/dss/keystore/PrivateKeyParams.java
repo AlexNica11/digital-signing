@@ -17,7 +17,13 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 public class PrivateKeyParams implements Serializable {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    @JsonIgnore
+    private Integer id;
+
     @Column
     @NotBlank
     private String alias;
@@ -27,7 +33,7 @@ public class PrivateKeyParams implements Serializable {
     private String password;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "keyStoreParams_keyStoreName")
+    @JoinColumn(name = "keyStoreParams_id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private KeyStoreParams keyStoreParams;
 
