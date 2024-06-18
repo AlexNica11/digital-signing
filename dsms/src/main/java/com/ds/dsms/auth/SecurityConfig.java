@@ -41,10 +41,11 @@ public class SecurityConfig {
                 // Disable CSRF (cross site request forgery)
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
+                .formLogin(form -> form.disable())
                 // No session will be created or used by spring security
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JWTTokenFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(httpBasic -> httpBasic.disable());
         return http.build();
     }
 
