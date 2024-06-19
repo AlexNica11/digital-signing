@@ -73,4 +73,10 @@ public class UserController {
         KeyStoreParams keyStoreParams = new KeyStoreParams(keyStoreName, file.getBytes(), keyStorePassword, Set.of(privateKeyParamsObject));
         userService.uploadKeyStore(keyStoreParams, jwtToken);
     }
+
+    @PostMapping("/deleteKeyStore")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteKeyStore(@RequestBody String keyStoreName, @RequestHeader("Authorization") String jwtToken){
+        userService.deleteKeyStore(keyStoreName, jwtToken);
+    }
 }

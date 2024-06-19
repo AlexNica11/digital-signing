@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface KeyStoreRepository extends JpaRepository<KeyStoreParams, Integer> {
-    Boolean existsByKeyStoreNameAndUser(String id, User user);
+    Boolean existsByKeyStoreNameAndUser(String name, User user);
+    KeyStoreParams deleteByKeyStoreNameAndUser(String name, User user);
     Optional<KeyStoreParams> findByKeyStoreNameAndUser(String id, User user);
     List<KeyStoreParams> findByUser(User user);
 }

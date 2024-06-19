@@ -111,6 +111,10 @@ public class UserService {
         return nameList;
     }
 
+    public void deleteKeyStore(String keyStoreName, String jwtToken){
+        keyStoreRepository.delete(keyStoreRepository.findByKeyStoreNameAndUser(keyStoreName, getUserFromToken(jwtToken)).orElseThrow(() -> new KeyStoreException("Key store not found")));
+    }
+
     private User getUserFromToken(String jwtToken) {
         String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found"));
