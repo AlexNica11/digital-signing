@@ -1,4 +1,4 @@
-import {NavLink, useParams} from "react-router-dom";
+import {NavLink, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
@@ -6,6 +6,24 @@ import secureLocalStorage from "react-secure-storage";
 export default function KeyStorePage(){
     let {keyStoreName} = useParams();
     const [pkParams, setPkParams] = useState([]);
+    const navigate = useNavigate();
+
+    const handleDeleteKeyStore = (e) => {
+        if (keyStoreName !== "") {
+            axios({
+                method: 'post',
+                url: `/api/users/deleteKeyStore`,
+                data: keyStoreName,
+                headers: {
+                    Authorization: "Bearer " + secureLocalStorage.getItem("securityToken"),
+                    'Content-Type': 'text/plain'
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+            navigate("/");
+        }
+    };
 
     useEffect(() => {
         axios({
@@ -30,6 +48,9 @@ export default function KeyStorePage(){
     return (
         <>
             <h1>KeyStore {keyStoreName}</h1>
+            <button onClick={handleDeleteKeyStore} className="btn-submit">
+                Delete Key Store
+            </button>
             <div>
                 <label>Key Store Entries</label>
                 <ul>
