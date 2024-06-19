@@ -1,5 +1,6 @@
 import { useAuth } from "../auth/AuthProvider.jsx";
 import {NavLink, Outlet} from "react-router-dom";
+import secureLocalStorage from "react-secure-storage";
 
 const Dashboard = () => {
     const auth = useAuth();
@@ -8,7 +9,7 @@ const Dashboard = () => {
             <div id="sidebar">
                 <div className="container">
                     <div>
-                        <h2>Welcome! {auth.user?.username}</h2>
+                        <h2>Welcome! {secureLocalStorage.getItem("username")}</h2>
                         <button onClick={() => auth.logOut()} className="btn-submit">
                             logout
                         </button>

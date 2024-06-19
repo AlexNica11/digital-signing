@@ -34,6 +34,7 @@ const AuthProvider = ({ children }) => {
                 setUser(data.username);
                 setToken(res.jwt);
                 secureLocalStorage.setItem("securityToken", res.jwt);
+                secureLocalStorage.setItem("username", data.username);
                 navigate("/");
                 return;
             }

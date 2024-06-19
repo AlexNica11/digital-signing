@@ -9,6 +9,7 @@ import SignDocumentPage from "./routes/SignDocumentPage.jsx";
 import UploadKeyStorePage from "./routes/UploadKeyStorePage.jsx";
 import KeyStorePage from "./routes/KeyStorePage.jsx";
 import DocumentStatusPage from "./routes/DocumentStatusPage.jsx";
+import Signup from "./auth/Signup.jsx";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
                 <AuthProvider>
                     <Routes>
                         <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
                         <Route element={<PrivateRoute />} errorElement={ErrorPage}>
                             <Route path="/" element={<Dashboard />}>
                                 <Route path="/profile" element={<ProfilePage/>}/>
