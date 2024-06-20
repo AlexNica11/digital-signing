@@ -50,54 +50,49 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleSubmitEvent}>
-            <div className="form_control">
-                <label htmlFor="user-email">Email:</label>
-                <input
-                    type="email"
-                    id="user-email"
-                    name="email"
-                    placeholder="email@email.com"
-                    aria-describedby="user-email"
-                    aria-invalid="false"
-                    onChange={handleInput}
-                />
-                <div id="user-email" className="sr-only">
-                    Please enter a valid username. It must contain at least 6 characters.
-                </div>
+    <div className="card">
+        <form className="center card-content" onSubmit={handleSubmitEvent}>
+            <div className="s12 m6 input-field">
+                <input id="email"
+                       type="email"
+                       className="validate"
+                       name="email"
+                       aria-describedby="email"
+                       aria-invalid="false"
+                       placeholder="email@email.com"
+                       maxLength="20"
+                       onChange={handleInput}/>
+                <label htmlFor="email">Email</label>
             </div>
-            <div className="form_control">
-                <label htmlFor="username">Username:</label>
-                <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    placeholder="username"
-                    aria-describedby="username"
-                    aria-invalid="false"
-                    onChange={handleInput}
-                />
-                <div id="username" className="sr-only">
-                    your username should be more than 6 character
-                </div>
+            <div className="s12 m6 input-field">
+                <input id="username"
+                       type="text"
+                       className="validate"
+                       name="username"
+                       aria-describedby="username"
+                       aria-invalid="false"
+                       placeholder=" "
+                       onChange={handleInput}/>
+                <label htmlFor="username">Username</label>
+                <span className="supporting-text" data-error="wrong" data-success="right">Your username should be more than 6 character</span>
             </div>
-            <div className="form_control">
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    aria-describedby="user-password"
-                    aria-invalid="false"
-                    onChange={handleInput}
-                />
-                <div id="user-password" className="sr-only">
-                    your password should be more than 6 character
-                </div>
+            <div className="s12 m6 input-field">
+                <input id="password"
+                       type="password"
+                       className="validate"
+                       name="password"
+                       aria-describedby="password"
+                       aria-invalid="false"
+                       placeholder=" "
+                       maxLength="20"
+                       onChange={handleInput}/>
+                <label htmlFor="password">Password</label>
             </div>
-            <button className="btn-submit">Submit</button>
+            <button className="btn tonal btn-submit left">Submit</button>
         </form>
-    );
+    </div>
+)
+    ;
 };
 
 export default Login;

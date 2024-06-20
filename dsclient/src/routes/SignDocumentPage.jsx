@@ -82,7 +82,8 @@ export default function SignDocumentPage(){
         }));
 
         // Details of the uploaded file
-        console.log(selectedFile);
+        console.log(selectedFile.name);
+        console.log(params.signature + signatureLevel);
 
         // Request made to the backend api
         // Send formData object
@@ -116,49 +117,54 @@ export default function SignDocumentPage(){
 
     return (
         <>
-            <div>
-                <h3>Sign Document</h3>
+            <div className="">
+                <h3>Sign a document of choice</h3>
                 <div>
+                    <br/>
+                    <br/>
                     <input
                         type="file"
                         onChange={onFileChange}
+                        className="btn-large"
                     />
-                    <button onClick={onFileUpload}>
-                        Sign!
-                    </button>
-                    <div className="form_control">
-                        <label htmlFor="signature">signature</label>
-                        <select name="signature" id="signature" onChange={handleSignature}>
+                    <div className="">
+                        <label htmlFor="signature"><h5>Signature</h5></label>
+                        <select className="browser-default" name="signature" id="signature" onChange={handleSignature}>
                             {signatures.map((sig) =>
-                                <option key={sig} value={sig}>{sig}</option>
+                                <option key={sig} value={sig}>{sig.slice(0, -1)}</option>
                             )}
                         </select>
-                        <select name="signatureLevel" id="signatureLevel" onChange={handleSignatureLevel}>
+                        <label htmlFor="signatureLevel"><h5>Signature Level</h5></label>
+                        <select className="browser-default" name="signatureLevel" id="signatureLevel"
+                                onChange={handleSignatureLevel}>
                             <option value="B">B</option>
                             <option value="T">T</option>
                             <option value="LT">LT</option>
                             <option value="LTA">LTA</option>
                         </select>
-                        <label>{params.signature + signatureLevel}</label>
-                    </div>
-                    <div className="form_control">
-                        <label htmlFor="extendSignature">extendSignature</label>
-                        <select name="extendSignature" id="extendSignature" onChange={handleInput}>
+                        <h5>{params.signature + signatureLevel}</h5>
+                        <label htmlFor="extendSignature"><h5>Extend Signature</h5></label>
+                        <select className="browser-default" name="extendSignature" id="extendSignature"
+                                onChange={handleInput}>
                             <option value="false">false</option>
                             <option value="true">true</option>
                         </select>
-                        <label>{params.extendSignature}</label>
+                        {/*<label>{params.extendSignature}</label>*/}
                     </div>
                     <div className="form_control">
-                        <label htmlFor="keyStoreName">keyStoreName</label>
+                        <label htmlFor="keyStoreName"><h5>Key Store Name</h5></label>
                         <input id="keyStoreName" name="keyStoreName" onChange={handleInput}/>
                         <label>{params.keyStoreName}</label>
                     </div>
                     <div className="form_control">
-                        <label htmlFor="privateKeyAlias">privateKeyAlias</label>
+                        <label htmlFor="privateKeyAlias"><h5>Private Key Alias</h5></label>
                         <input id="privateKeyAlias" name="privateKeyAlias" onChange={handleInput}/>
                         <label>{params.privateKeyAlias}</label>
                     </div>
+                    <br/>
+                    <button className="btn elevated" onClick={onFileUpload}>
+                        Sign!
+                    </button>
                 </div>
             </div>
         </>

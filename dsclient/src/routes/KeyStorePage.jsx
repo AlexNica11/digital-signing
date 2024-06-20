@@ -47,16 +47,18 @@ export default function KeyStorePage(){
 
     return (
         <>
-            <h1>KeyStore {keyStoreName}</h1>
-            <button onClick={handleDeleteKeyStore} className="btn-submit">
+            <h3>Key Store</h3>
+            <blockquote><h4>{keyStoreName}</h4></blockquote>
+            <button onClick={handleDeleteKeyStore} className="btn outlined icon-right light-blue-text accent-4">
                 Delete Key Store
+                <i className="material-icons">remove</i>
             </button>
             <div>
-                <label>Key Store Entries</label>
-                <ul>
+                <h5>Key Store Entries</h5>
+                <ul className="collection">
                     {pkParams.map((pk) =>
-                        <li key={pk}>
-                            <label>{pk}</label>
+                        <li className="collection-item light-blue-text accent-4" key={pk}>
+                            <h6 className="">{pk}</h6>
                         </li>
                     )}
                 </ul>

@@ -105,27 +105,27 @@ export default function DocumentStatusPage(){
 
     return (
         <>
-            <h1>DocumentStatusPage</h1>
-            <div>
-                <h2>Running Jobs</h2>
-                <ul>
+            <h3>Document status</h3>
+            <div className="card-panel">
+                <h4>Running Jobs</h4>
+                <ul className="collection">
                     {runningJobs.map((rj) =>
-                        <li key={rj.jobId}>
-                            <label>{rj.jobId}</label>
+                        <li className="collection-item" key={rj.jobId}>
+                            <h6>{rj.jobId}</h6>
                         </li>
                     )}
                 </ul>
             </div>
-            <div>
-                <h2>Completed Jobs</h2>
-                <h4>Press on job name to download</h4>
-                <ul>
+            <div className="card-panel">
+                <h4 >Completed Jobs</h4>
+                <ul className="collection">
                     {completedJobs.map((cj) =>
-                        <li key={cj.jobId}>
-                            <button onClick={getFile}>{cj.jobId}</button>
+                        <li className="collection-item" key={cj.jobId}>
+                            <button className="btn text" onClick={getFile}>{cj.jobId}</button>
                         </li>
                     )}
                 </ul>
+                <blockquote><h5>Press on job name to download</h5></blockquote>
             </div>
         </>
     );

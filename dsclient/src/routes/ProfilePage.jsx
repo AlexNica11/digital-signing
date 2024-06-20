@@ -25,19 +25,19 @@ export default function ProfilePage(){
 
     return (
         <>
-            <h1>Profile</h1>
+            <h3>Profile</h3>
             <div>
-
+                <NavLink className="btn outlined icon-right light-blue-text accent-4" to={"/uploadKeystore"}>
+                    Upload KeyStore
+                    <i className="material-icons">add</i>
+                </NavLink>
             </div>
             <div>
-                <NavLink to={"/uploadKeystore"}>Upload KeyStore</NavLink>
-            </div>
-            <div>
-                <label>Key Stores</label>
-                <ul>
+                <h4>Key Stores</h4>
+                <ul className="collection">
                     {keyStores.map((ks) =>
                         <li key={ks}>
-                            <NavLink to={"/keyStore/" + ks}>{ks}</NavLink>
+                            <NavLink className="collection-item active light-blue accent-4" to={"/keyStore/" + ks}>{ks}</NavLink>
                         </li>
                     )}
                 </ul>

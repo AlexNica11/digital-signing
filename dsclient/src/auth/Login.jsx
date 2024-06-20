@@ -29,45 +29,40 @@ const Login = () => {
     };
 
     return (
-        <>
-        <form onSubmit={handleSubmitEvent}>
-            <div className="form_control">
-                <label htmlFor="username">Username:</label>
-                <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    placeholder="username"
-                    aria-describedby="username"
-                    aria-invalid="false"
-                    onChange={handleInput}
-                />
-                <div id="username" className="sr-only">
-                    your username should be more than 6 character
+        <div className="card">
+            <form className="center card-content" onSubmit={handleSubmitEvent}>
+                <div className="s12 m6 input-field">
+                    <input id="username"
+                           type="text"
+                           className="validate"
+                           name="username"
+                           aria-describedby="username"
+                           aria-invalid="false"
+                           placeholder=" "
+                           onChange={handleInput}/>
+                    <label htmlFor="username">Username</label>
+                    <span className="supporting-text" data-error="wrong" data-success="right">Your username should be more than 6 character</span>
                 </div>
-            </div>
-            <div className="form_control">
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    aria-describedby="user-password"
-                    aria-invalid="false"
-                    onChange={handleInput}
-                />
-                <div id="user-password" className="sr-only">
-                    your password should be more than 6 character
+                <div className="s12 m6 input-field">
+                    <input id="password"
+                           type="password"
+                           className="validate"
+                           name="password"
+                           aria-describedby="password"
+                           aria-invalid="false"
+                           placeholder=" "
+                           maxLength="20"
+                           onChange={handleInput}/>
+                    <label htmlFor="password">Password</label>
                 </div>
+                <button className="btn tonal btn-submit left">Submit</button>
+            </form>
+            <div className="right">
+                <NavLink className="btn tonal" to={"/signup"}>Signup</NavLink>
             </div>
-            <button className="btn-submit">Submit</button>
-        </form>
-        <div>
-            <NavLink to={"/signup"}>Signup</NavLink>
         </div>
-        </>
-)
-    ;
+    )
+        ;
 };
 
 export default Login;
