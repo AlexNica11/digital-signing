@@ -44,7 +44,7 @@ public class KeyStoreParams {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "keyStoreParams", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PrivateKeyParams> privateKeyParams;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;

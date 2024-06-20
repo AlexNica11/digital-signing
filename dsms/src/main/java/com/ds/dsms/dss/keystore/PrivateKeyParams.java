@@ -32,7 +32,7 @@ public class PrivateKeyParams implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "keyStoreParams_id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private KeyStoreParams keyStoreParams;
