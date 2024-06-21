@@ -206,7 +206,8 @@ export default function UploadKeyStorePage(){
                     <i className="material-icons">add</i>
                 </button>
             </form>
-            <div >
+            <blockquote>Key store entry password can be left empty if there is no password.</blockquote>
+            <div>
                 <h5>Key Store Entries</h5>
                 <ul className="collection">
                     {privateKeyParams.map((pk) =>

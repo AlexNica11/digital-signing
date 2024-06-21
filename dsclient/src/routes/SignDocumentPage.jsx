@@ -6,6 +6,8 @@ export default function SignDocumentPage(){
     const [selectedFile, setSelectedFile] = useState(null);
     const [signatures, setSignatures] = useState(["CAdES_BASELINE_"]);
     const [signatureLevel, setSignatureLevel] = useState("B");
+    const [keyStores, setKeyStores] = useState([]);
+    const [privateKeyAliases, setPrivateKeyAliases] = useState([]);
 
     const [params, setParams] = useState({
         signature: "CAdES_BASELINE_",
@@ -100,14 +102,74 @@ export default function SignDocumentPage(){
 
     useEffect(() => {
         setSelectedFile(null);
+
+        axios({
+            method: 'post',
+            url: `/api/users/keyStores`,
+            headers: {
+                Authorization: "Bearer " + secureLocalStorage.getItem("securityToken"),
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((resKs) => {
+            console.log(resKs.data);
+            setKeyStores(resKs.data);
+            params.keyStoreName = resKs.data[0];
+
+            if(resKs.data.length > 0) {
+                axios({
+                    method: 'post',
+                    url: `/api/users/privateKeyParams`,
+                    data: resKs.data[0],
+                    headers: {
+                        Authorization: "Bearer " + secureLocalStorage.getItem("securityToken"),
+                        Accept: 'application/json',
+                        'Content-Type': 'text/plain'
+                    }
+                }).then((resPk) => {
+                    console.log(resPk.data);
+                    setPrivateKeyAliases(resPk.data);
+                    params.privateKeyAlias = resPk.data[0];
+                    setParams(params);
+                }).catch((error) => {
+                    console.error(error);
+                });
+            }
+
+        }).catch((error) => {
+            console.error(error);
+        });
+
     }, [])
 
     const handleInput = (e) => {
         const { name, value } = e.target;
-        setParams((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+
+        if(name === 'keyStoreName') {
+            axios({
+                method: 'post',
+                url: `/api/users/privateKeyParams`,
+                data: value,
+                headers: {
+                    Authorization: "Bearer " + secureLocalStorage.getItem("securityToken"),
+                    Accept: 'application/json',
+                    'Content-Type': 'text/plain'
+                }
+            }).then((resPk) => {
+                console.log(resPk.data);
+                setPrivateKeyAliases(resPk.data);
+                params.privateKeyAlias = resPk.data[0];
+                params.keyStoreName = value;
+                setParams(params);
+            }).catch((error) => {
+                console.error(error);
+            });
+        } else {
+            setParams((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
     };
 
     const handleSignatureLevel = (e) => {
@@ -153,13 +215,25 @@ export default function SignDocumentPage(){
                     </div>
                     <div className="form_control">
                         <label htmlFor="keyStoreName"><h5>Key Store Name</h5></label>
-                        <input id="keyStoreName" name="keyStoreName" onChange={handleInput}/>
+                        <select className="browser-default" name="keyStoreName" id="keyStoreName"
+                                onChange={handleInput}>
+                            {keyStores.map((ks) =>
+                                <option key={ks} value={ks}>{ks}</option>
+                            )}
+                        </select>
                         <label>{params.keyStoreName}</label>
+
                     </div>
                     <div className="form_control">
                         <label htmlFor="privateKeyAlias"><h5>Private Key Alias</h5></label>
-                        <input id="privateKeyAlias" name="privateKeyAlias" onChange={handleInput}/>
+                        <select className="browser-default" name="privateKeyAlias" id="privateKeyAlias"
+                                onChange={handleInput}>
+                            {privateKeyAliases.map((pk) =>
+                                <option key={pk} value={pk}>{pk}</option>
+                            )}
+                        </select>
                         <label>{params.privateKeyAlias}</label>
+
                     </div>
                     <br/>
                     <button className="btn elevated" onClick={onFileUpload}>
