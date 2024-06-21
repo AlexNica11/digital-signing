@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/service")
@@ -40,7 +41,8 @@ public class SignController {
     @ResponseStatus(HttpStatus.ACCEPTED)
 //    public Long signDocument(@Validated @RequestBody DocumentPayloadDTO documentPayload) {
     public ResponseEntity<byte[]> signDocument(@Validated @RequestBody DocumentPayloadDTO documentPayload, @RequestHeader("Authorization") String jwtToken) {
-        String jobId = documentPayload.getDocumentName() + DigestUtils.sha256Hex(String.valueOf(System.currentTimeMillis()));
+//        String jobId = documentPayload.getDocumentName() + DigestUtils.sha256Hex(String.valueOf(System.currentTimeMillis()));
+        String jobId = documentPayload.getDocumentName() + "_" + documentPayload.getSignature() + "_" + DigestUtils.sha256Hex(String.valueOf(new Random().nextInt(1000)));
 //        System.out.println(documentPayload.getDocumentName());
         Long jobIdLong = signService.signJob(jobId, documentPayload, jwtToken);
 //        System.out.println("jobIdLong: " + jobIdLong);
@@ -60,22 +62,24 @@ public class SignController {
 
     @PostMapping("/signWithFormData")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void signDocumentWithFormData(@RequestParam MultipartFile document, @RequestParam String documentName, @RequestParam String signature, @RequestParam boolean extendSignature, @RequestParam String keyStoreParams, @RequestHeader("Authorization") String jwtToken) throws IOException {
+    public void signDocumentWithFormData(@RequestParam MultipartFile document, @RequestParam String documentName,
+                                         @RequestParam String signature, @RequestParam boolean extendSignature,
+                                         @RequestParam String keyStoreParams, @RequestHeader("Authorization") String jwtToken) throws IOException {
         KeyStoreParams keyStoreParamsObject = new ObjectMapper().readValue(keyStoreParams, KeyStoreParams.class);
-        DocumentPayloadDTO documentPayload = new DocumentPayloadDTO(document.getBytes(), documentName, signature, extendSignature, keyStoreParamsObject, false);
+        DocumentPayloadDTO documentPayload = new DocumentPayloadDTO(document.getBytes(), documentName, signature,
+                extendSignature, keyStoreParamsObject, false);
 
-        String jobId = documentPayload.getDocumentName() + DigestUtils.sha256Hex(String.valueOf(System.currentTimeMillis()));
+//        String jobId = documentPayload.getDocumentName() + DigestUtils.sha256Hex(String.valueOf(System.currentTimeMillis()));
+        String jobId = documentPayload.getDocumentName() + "_" + documentPayload.getSignature() + "_" + DigestUtils.sha256Hex(String.valueOf(new Random().nextInt(1000)));
         Long jobIdLong = signService.signJob(jobId, documentPayload, jwtToken);
     }
 
     @PostMapping("/getDocument")
-//    @ResponseStatus(HttpStatus.CREATED) // maybe another status
     public ResponseEntity<byte[]> getDocument(@RequestBody String jobId){
         Optional<SignedDocument> signedDoc = signedDocumentRepository.findByJobId(jobId);
         if (signedDoc.isPresent()) {
             signedDocumentRepository.deleteByJobId(jobId);
             SignedDocument signedDocument = signedDoc.get();
-//            return new ResponseEntity<>(signedDoc.get().getData(), HttpStatus.CREATED);
             MediaType mediaType ;
             if(signedDocument.getDocumentName().endsWith(".pdf")){
                 mediaType = MediaType.APPLICATION_PDF;
