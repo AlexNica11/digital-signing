@@ -10,6 +10,7 @@ import UploadKeyStorePage from "./routes/UploadKeyStorePage.jsx";
 import KeyStorePage from "./routes/KeyStorePage.jsx";
 import DocumentStatusPage from "./routes/DocumentStatusPage.jsx";
 import Signup from "./auth/Signup.jsx";
+import HomePage from "./routes/HomePage.jsx";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
                         <Route path="/signup" element={<Signup />} />
                         <Route element={<PrivateRoute />} errorElement={ErrorPage}>
                             <Route path="/" element={<Dashboard />}>
+                                <Route index element={<HomePage/>}/>
                                 <Route path="/profile" element={<ProfilePage/>}/>
                                 <Route path="/signDocument" element={<SignDocumentPage/>}/>
                                 <Route path="/documentStatus" element={<DocumentStatusPage/>}/>

@@ -29,7 +29,8 @@ const Login = () => {
     };
 
     return (
-        <div className="card">
+        <div className="card" style={{width: "50%", position: "absolute", left: "25%", top:"10%"}}>
+            <h3 className="center">Login</h3>
             <form className="center card-content" onSubmit={handleSubmitEvent}>
                 <div className="s12 m6 input-field">
                     <input id="username"
@@ -55,6 +56,7 @@ const Login = () => {
                            onChange={handleInput}/>
                     <label htmlFor="password">Password</label>
                 </div>
+                <br/>
                 <button className="btn tonal btn-submit left">Submit</button>
             </form>
             <div className="right">

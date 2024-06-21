@@ -16,6 +16,14 @@ const Dashboard = () => {
                         <ul id="nav-mobile" className="left hide-on-med-and-down">
                             <li>
                                 <NavLink
+                                    to={`/`}
+                                    className="btn-large text"
+                                >
+                                    Home Page
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
                                     to={`/signDocument`}
                                     className="btn-large text"
                                 >

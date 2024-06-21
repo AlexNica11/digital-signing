@@ -50,49 +50,51 @@ const Login = () => {
     };
 
     return (
-    <div className="card">
-        <form className="center card-content" onSubmit={handleSubmitEvent}>
-            <div className="s12 m6 input-field">
-                <input id="email"
-                       type="email"
-                       className="validate"
-                       name="email"
-                       aria-describedby="email"
-                       aria-invalid="false"
-                       placeholder="email@email.com"
-                       maxLength="20"
-                       onChange={handleInput}/>
-                <label htmlFor="email">Email</label>
-            </div>
-            <div className="s12 m6 input-field">
-                <input id="username"
-                       type="text"
-                       className="validate"
-                       name="username"
-                       aria-describedby="username"
-                       aria-invalid="false"
-                       placeholder=" "
-                       onChange={handleInput}/>
-                <label htmlFor="username">Username</label>
-                <span className="supporting-text" data-error="wrong" data-success="right">Your username should be more than 6 character</span>
-            </div>
-            <div className="s12 m6 input-field">
-                <input id="password"
-                       type="password"
-                       className="validate"
-                       name="password"
-                       aria-describedby="password"
-                       aria-invalid="false"
-                       placeholder=" "
-                       maxLength="20"
-                       onChange={handleInput}/>
-                <label htmlFor="password">Password</label>
-            </div>
-            <button className="btn tonal btn-submit left">Submit</button>
-        </form>
-    </div>
-)
-    ;
+        <div className="card" style={{width: "50%", position: "absolute", left: "25%", top: "10%"}}>
+            <h3 className="center">Sign Up</h3>
+            <form className="center card-content" onSubmit={handleSubmitEvent}>
+                <div className="s12 m6 input-field">
+                    <input id="email"
+                           type="email"
+                           className="validate"
+                           name="email"
+                           aria-describedby="email"
+                           aria-invalid="false"
+                           placeholder="email@email.com"
+                           maxLength="20"
+                           onChange={handleInput}/>
+                    <label htmlFor="email">Email</label>
+                </div>
+                <div className="s12 m6 input-field">
+                    <input id="username"
+                           type="text"
+                           className="validate"
+                           name="username"
+                           aria-describedby="username"
+                           aria-invalid="false"
+                           placeholder=" "
+                           onChange={handleInput}/>
+                    <label htmlFor="username">Username</label>
+                    <span className="supporting-text" data-error="wrong" data-success="right">Your username should be more than 6 character</span>
+                </div>
+                <div className="s12 m6 input-field">
+                    <input id="password"
+                           type="password"
+                           className="validate"
+                           name="password"
+                           aria-describedby="password"
+                           aria-invalid="false"
+                           placeholder=" "
+                           maxLength="20"
+                           onChange={handleInput}/>
+                    <label htmlFor="password">Password</label>
+                </div>
+                <br/>
+                <button className="btn tonal btn-submit left">Submit</button>
+            </form>
+        </div>
+    )
+        ;
 };
 
 export default Login;
