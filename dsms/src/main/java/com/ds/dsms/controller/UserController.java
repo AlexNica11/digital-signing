@@ -2,6 +2,7 @@ package com.ds.dsms.controller;
 
 import com.ds.dsms.auth.UserService;
 import com.ds.dsms.auth.dto.LoginDTO;
+import com.ds.dsms.auth.model.Role;
 import com.ds.dsms.auth.model.User;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
 import com.ds.dsms.dss.keystore.PrivateKeyParams;
@@ -36,15 +37,36 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-//    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public User signup(@RequestBody @Valid LoginDTO loginDto) {
-        return userService.signup(loginDto.getUsername(), loginDto.getPassword(), loginDto.getEmail())
+        return userService.signup(loginDto.getUsername(), loginDto.getPassword(), loginDto.getEmail(), Set.of(Role.ROLE_USER))
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.BAD_REQUEST,"User already exists"));
     }
 
-    @GetMapping
+    @PostMapping("/signupAdmin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public User signupAdmin(@RequestBody @Valid LoginDTO loginDto) {
+        return userService.signup(loginDto.getUsername(), loginDto.getPassword(), loginDto.getEmail(), Set.of(Role.ROLE_USER, Role.ROLE_ADMIN))
+                .orElseThrow(() -> new HttpServerErrorException(HttpStatus.BAD_REQUEST,"User already exists"));
+    }
+
+    @PostMapping("/deleteUserByAdmin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUserByAdmin(@RequestBody String username, @RequestHeader("Authorization") String jwtToken) {
+        userService.deleteUserByAdmin(username);
+    }
+
+    @PostMapping("/deleteUser")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUser(@RequestHeader("Authorization") String jwtToken) {
+        userService.deleteUser(jwtToken);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public List<User> getAllUsers() {
         return userService.getAll();
     }

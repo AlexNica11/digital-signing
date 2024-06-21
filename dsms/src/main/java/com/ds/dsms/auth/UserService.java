@@ -55,7 +55,7 @@ public class UserService {
         return token;
     }
 
-    public Optional<User> signup(String username, String password, String email) {
+    public Optional<User> signup(String username, String password, String email, Set<Role> roles) {
         LOGGER.info("New user attempting to signup");
         Optional<User> user = Optional.empty();
         if (userRepository.findByUsername(username).isEmpty()) {
@@ -63,11 +63,23 @@ public class UserService {
                     username,
                     passwordEncoder.encode(password),
                     email,
-                    Set.of(Role.ROLE_USER)
+                    roles
             )));
         }
         return user;
     }
+
+    public void deleteUserByAdmin(String username) {
+        LOGGER.info("Deleting user {}", username);
+        userRepository.delete(userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found")));
+    }
+
+    public void deleteUser(String jwtToken) {
+        String username = jwtProvider.getUsernameFromBearerToken(jwtToken);
+        LOGGER.info("Deleting user {}", username);
+        userRepository.delete(userRepository.findByUsername(username).orElseThrow(() -> new UserException("User: " + username + " not found")));
+    }
+
     public List<User> getAll() {
         return userRepository.findAll();
     }
