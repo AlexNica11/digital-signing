@@ -71,6 +71,12 @@ public class UserController {
         return userService.getAll();
     }
 
+    @PostMapping("/currentUser")
+    @ResponseStatus(HttpStatus.OK)
+    public User getUser(@RequestHeader("Authorization") String jwtToken) {
+        return userService.getUserFromToken(jwtToken);
+    }
+
     @PostMapping("/uploadKeyStore")
     @ResponseStatus(HttpStatus.CREATED)
     public void uploadKeyStore(@RequestBody @Valid KeyStoreParams keyStoreParams, @RequestHeader("Authorization") String jwtToken) {
