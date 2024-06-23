@@ -17,7 +17,6 @@ import java.util.concurrent.Executors;
         havingValue = "virtual"
 )
 public class ExecutionConfiguration {
-    //https://www.baeldung.com/spring-6-virtual-threads
 
     @Bean
     public AsyncTaskExecutor applicationTaskExecutor() {

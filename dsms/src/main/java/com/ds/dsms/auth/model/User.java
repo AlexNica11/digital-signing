@@ -2,6 +2,7 @@ package com.ds.dsms.auth.model;
 
 import com.ds.dsms.dss.keystore.KeyStoreParams;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,9 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,6 +23,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer id;
 
     @NotBlank
@@ -47,6 +47,7 @@ public class User {
 
     @Setter
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<KeyStoreParams> keyStoreParams = new HashSet<>();
 
     protected User() {

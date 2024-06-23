@@ -63,11 +63,9 @@ public class BatchSignService {
                 .addString(BatchUtils.BATCH_JOB_ID, jobId, true)
                 .addString(BatchUtils.BATCH_USERNAME, username, true)
                 .addString(BatchUtils.BATCH_DOCUMENT_NAME, documentPayload.getDocumentName(), false)
-//                .addJobParameter(BatchUtils.BATCH_PAYLOAD, documentPayload, DocumentPayloadDTO.class)
                 .toJobParameters();
 
         addSignaturesToPayload(documentPayload, username);
-//        BatchUtils.UNFINISHED_JOBS.put(jobId, documentPayload);
         BatchUtils.getDocumentCache().put(jobId, documentPayload);
 
         try {

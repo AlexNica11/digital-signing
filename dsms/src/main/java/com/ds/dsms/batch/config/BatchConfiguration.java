@@ -70,6 +70,8 @@ public class BatchConfiguration {
     public void deleteOldSignedDocuments() {
         Date date = new Date(System.currentTimeMillis() - 5 * 3600 * 1000);
         List<SignedDocument> signedDocuments = signedDocumentRepository.findAllByCreationDateBefore(date);
-        signedDocumentRepository.deleteAll(signedDocuments);
+        if(!(signedDocuments == null || signedDocuments.isEmpty())) {
+            signedDocumentRepository.deleteAll(signedDocuments);
+        }
     }
 }

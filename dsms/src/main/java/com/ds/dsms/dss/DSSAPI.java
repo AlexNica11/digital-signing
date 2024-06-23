@@ -17,28 +17,17 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
-import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.tsl.cache.CacheCleaner;
-import eu.europa.esig.dss.tsl.job.TLValidationJob;
-import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.util.Pair;
 
-import java.io.File;
 import java.security.KeyStore.PasswordProtection;
-import java.util.List;
 import java.util.Set;
 
 public class DSSAPI {
@@ -68,11 +57,11 @@ public class DSSAPI {
         PAdESService padesService = new PAdESService(commonCertificateVerifier);
 
         for(KeyStoreParams keyStore : keyStores){
-            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStoreBytes(), new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
+            try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStore.getKeyStoreBytes(),
+                    new PasswordProtection(keyStore.getKeyStorePassword().toCharArray()))) {
 
                 // Preparing parameters for the PAdES signature
                 PAdESSignatureParameters parameters = initSignatureParameters();
-//                parameters.setSignatureLevel(signatureLevel);
                 Set<PrivateKeyParams> privateKeyParams = keyStore.getPrivateKeyParams();
                 for(PrivateKeyParams privateKeyParam : privateKeyParams) {
                     // Set the signing certificate and a certificate chain for the used token
@@ -81,7 +70,8 @@ public class DSSAPI {
                     if(StringUtils.isBlank(privateKeyParam.getPassword())){
                         privateKey = signingToken.getKey(privateKeyParam.getAlias());
                     } else {
-                        privateKey = signingToken.getKey(privateKeyParam.getAlias(), new PasswordProtection(privateKeyParam.getPassword().toCharArray()));
+                        privateKey = signingToken.getKey(privateKeyParam.getAlias(),
+                                new PasswordProtection(privateKeyParam.getPassword().toCharArray()));
                     }
 
                     parameters.setSigningCertificate(privateKey.getCertificate());
@@ -110,9 +100,6 @@ public class DSSAPI {
                         // Trust anchors should be defined for revocation data requesting
                         commonCertificateVerifier.setTrustedCertSources(ExternalSources.getTrustedCertificateSource());
 
-                        // Might be a security issue
-                        // For test purpose (not recommended for use in production)
-                        //TODO
                         commonCertificateVerifier.setCheckRevocationForUntrustedChains(true);
 
                         // init TSP source for timestamp requesting
@@ -183,9 +170,6 @@ public class DSSAPI {
                         // Trust anchors should be defined for revocation data requesting
                         commonCertificateVerifier.setTrustedCertSources(ExternalSources.getTrustedCertificateSource());
 
-                        // Might be a security issue
-                        // For test purpose (not recommended for use in production)
-                        //TODO
                         commonCertificateVerifier.setCheckRevocationForUntrustedChains(true);
 
                         // init TSP source for timestamp requesting
@@ -256,9 +240,6 @@ public class DSSAPI {
                         // Trust anchors should be defined for revocation data requesting
                         commonCertificateVerifier.setTrustedCertSources(ExternalSources.getTrustedCertificateSource());
 
-                        // Might be a security issue
-                        // For test purpose (not recommended for use in production)
-                        //TODO
                         commonCertificateVerifier.setCheckRevocationForUntrustedChains(true);
 
                         // init TSP source for timestamp requesting
@@ -333,9 +314,6 @@ public class DSSAPI {
                         // Trust anchors should be defined for revocation data requesting
                         commonCertificateVerifier.setTrustedCertSources(ExternalSources.getTrustedCertificateSource());
 
-                        // Might be a security issue
-                        // For test purpose (not recommended for use in production)
-                        //TODO
                         commonCertificateVerifier.setCheckRevocationForUntrustedChains(true);
 
                         // init TSP source for timestamp requesting

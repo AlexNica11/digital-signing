@@ -1,10 +1,8 @@
 package com.ds.dsms.controller;
 
 import com.ds.dsms.batch.service.BatchSignService;
-import com.ds.dsms.batch.BatchUtils;
 import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
-import com.ds.dsms.exception.DSMSException;
 import com.ds.dsms.model.SignedDocument;
 import com.ds.dsms.repo.SignedDocumentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,26 +36,10 @@ public class SignController {
     }
 
     @PostMapping("/sign")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-//    public Long signDocument(@Validated @RequestBody DocumentPayloadDTO documentPayload) {
-    public ResponseEntity<byte[]> signDocument(@Validated @RequestBody DocumentPayloadDTO documentPayload, @RequestHeader("Authorization") String jwtToken) {
-//        String jobId = documentPayload.getDocumentName() + DigestUtils.sha256Hex(String.valueOf(System.currentTimeMillis()));
+//    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void signDocument(@Validated @RequestBody DocumentPayloadDTO documentPayload, @RequestHeader("Authorization") String jwtToken) {
         String jobId = documentPayload.getDocumentName() + "_" + documentPayload.getSignature() + "_" + DigestUtils.sha256Hex(String.valueOf(new Random().nextInt(1000)));
-//        System.out.println(documentPayload.getDocumentName());
         Long jobIdLong = signService.signJob(jobId, documentPayload, jwtToken);
-//        System.out.println("jobIdLong: " + jobIdLong);
-        System.out.println("Cache size: " + BatchUtils.getDocumentCache().size());
-//        return new ResponseEntity<>(BatchUtils.FINISHED_JOBS.get(jobId), HttpStatus.CREATED);
-        Optional<SignedDocument> signedDoc = signedDocumentRepository.findByJobId(jobId);
-        if (signedDoc.isPresent()) {
-            signedDocumentRepository.deleteByJobId(jobId);
-            return new ResponseEntity<>(signedDoc.get().getData(), HttpStatus.ACCEPTED);
-        }
-        return new ResponseEntity<>(new byte[0], HttpStatus.ACCEPTED);
-
-
-//        return new ResponseEntity<>(signedDocumentRepository.findByJobId(jobId).get().getData(), HttpStatus.ACCEPTED);
-//        return jobIdLong;
     }
 
     @PostMapping("/signWithFormData")
@@ -69,7 +51,6 @@ public class SignController {
         DocumentPayloadDTO documentPayload = new DocumentPayloadDTO(document.getBytes(), documentName, signature,
                 extendSignature, keyStoreParamsObject, false);
 
-//        String jobId = documentPayload.getDocumentName() + DigestUtils.sha256Hex(String.valueOf(System.currentTimeMillis()));
         String jobId = documentPayload.getDocumentName() + "_" + documentPayload.getSignature() + "_" + DigestUtils.sha256Hex(String.valueOf(new Random().nextInt(1000)));
         Long jobIdLong = signService.signJob(jobId, documentPayload, jwtToken);
     }
@@ -93,18 +74,6 @@ public class SignController {
             return ResponseEntity.ok().contentType(mediaType).body(signedDocument.getData());
         }
         return new ResponseEntity<>(new byte[0], HttpStatus.NOT_FOUND);
-    }
-
-    @PostMapping("/signingJobs")
-    @ResponseStatus(HttpStatus.FOUND)
-    public List<Map<String,String>> getSigningJobs(@RequestBody String jobSelection, @RequestHeader("Authorization") String jwtToken){
-        return switch (jobSelection) {
-            case "running" -> signService.getRunningSigningJobs(jwtToken);
-            case "completed" -> signService.getCompletedSigningJobs(jwtToken);
-//            case "all" -> signService.getAllJobs(jwtToken);
-            default ->
-                    throw new DSMSException("Job Selection not supported, please use one of running, completed, all");
-        };
     }
 
     @PostMapping("/runningSigningJobs")

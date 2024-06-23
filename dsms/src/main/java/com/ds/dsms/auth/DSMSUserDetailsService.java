@@ -1,7 +1,6 @@
 package com.ds.dsms.auth;
 
 import com.ds.dsms.auth.jwt.JWTProvider;
-import com.ds.dsms.auth.model.Role;
 import com.ds.dsms.auth.model.User;
 import com.ds.dsms.auth.repo.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.springframework.security.core.userdetails.User.withUsername;
@@ -27,7 +25,8 @@ public class DSMSUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new UsernameNotFoundException("Username: " + username + " not found"));
         return withUsername(user.getUsername())
                 .password(user.getPassword())
                 .authorities(user.getRoles())

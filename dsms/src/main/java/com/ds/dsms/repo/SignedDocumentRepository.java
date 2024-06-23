@@ -2,7 +2,6 @@ package com.ds.dsms.repo;
 
 import com.ds.dsms.model.SignedDocument;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -10,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional
-public interface SignedDocumentRepository extends JpaRepository<SignedDocument, Integer> {
+public interface SignedDocumentRepository extends JpaRepository<SignedDocument, String> {
 
     List<SignedDocument> findAllByCreationDateBefore(Date creationDate);
     List<SignedDocument> findByUsername(String username);

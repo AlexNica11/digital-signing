@@ -8,7 +8,6 @@ import com.ds.dsms.dss.keystore.KeyStoreParams;
 import com.ds.dsms.dss.keystore.PrivateKeyParams;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

@@ -1,11 +1,9 @@
 package com.ds.dsms.auth.jwt;
 
 import com.ds.dsms.auth.model.Role;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.jose4j.keys.HmacKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
