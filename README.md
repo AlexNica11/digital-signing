@@ -23,7 +23,7 @@ npm run build
 ```bash
 npm run preview
 ```
-The server will be available at localhost:4173.
+The client will be available at localhost:4173.
 
 # Server:
 
@@ -56,6 +56,7 @@ To deploy the database locally please run inside the "\digital-signing" folder t
 ```bash
 docker compose up
 ```
+The database will be available at localhost:5432.
 
 
 # Resources for testing
