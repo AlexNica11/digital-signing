@@ -23,6 +23,7 @@ npm run build
 ```bash
 npm run preview
 ```
+The server will be available at localhost:4173.
 
 # Server:
 
@@ -42,6 +43,7 @@ mvn clean install
 ```bash
 java -jar dsms-0.0.1-SNAPSHOT.jar
 ```
+The server will be available at localhost:8080.
 
 
 # Database:
