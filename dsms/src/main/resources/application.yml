@@ -29,7 +29,7 @@ security:
   jwt:
     token:
       # this has a length of 300 characters
-      secret-key: "WkraJ6Iot7ccgnz52ba7aF4ZzuSCBxKTO5whkkcrQISwPmH4uNJqiAWzeAx3LVdx4twVD8rcKpOOBX1UZ7UT1JtzfaSn6pXUzUu84D2ZB2seH5sm0608Or1NTzpXgOGz1fyKt9jF0YVqNaQ4HhsRFXMsXZV517zHUDdfrSrTPueNfebm9WDJwS2Ns9tQgTcVPKwVdQawcLMXsccLq07NUxKNTGdcUW6PjkN7H36FzXNSyzC5yy6ep1VKCgsLhsbRcxkIZHHvq5ebkEQreXRxd5jIbYpFgVWz9g072rDVKr4N"
+      secret-key: "XE0iY3s8VYxlMzJEfywYf0qss3IVsMtiERhA6uXJCAhIPfxqT0xYspjZhBfcccJJXUfz4gIU9hnGcJ2CMjCRc278POr9AM9iuH8femN4FqTss7WAk80F43Az6ywG9UPpw3OYf7slg0GiflKE9JJtpAAGeyUXXFpTwNNicgYHC0Oh7BH7g5p8muFi2aGW2LZO04nMrSVEPB9Yt5fOhQg8f7MyDlERMZ9Sxnmlx3CpOhCkUUDhM1kiARy6UL54FvoevFnbZwOZr3wLffgq86P5jH0Hs1ATGrR82wKO3eHVhHWsfh0JEC32S4p9sAokXDzsgnzF9JNNFYcjJi5N5lnFm7d1DVi4rm"
       expiration: 3600000
 
 server:

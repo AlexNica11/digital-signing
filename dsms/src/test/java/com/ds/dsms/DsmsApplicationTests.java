@@ -1,49 +1,29 @@
 package com.ds.dsms;
 
-import com.ds.dsms.controller.dto.DocumentPayloadDTO;
 import com.ds.dsms.dss.DSSAPI;
 import com.ds.dsms.dss.keystore.KeyStoreParams;
 import com.ds.dsms.dss.keystore.PrivateKeyParams;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.apache.commons.io.FileUtils;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class DsmsApplicationTests {
 	private String resourcesPath = "src/test/resources/";
-
-	@Test
-	void test() throws IOException {
-		byte[] unsignedDocument = FileUtils.readFileToByteArray(new File(resourcesPath + "xml_example.xml"));
-		String documentName = "xml_example.xml";
-		String signature = SignatureLevel.XAdES_BASELINE_LTA.name();
-		boolean extendSignature = false;
-		byte[] keyStore = FileUtils.readFileToByteArray(new File(resourcesPath + "good-user-crl-ocsp.p12"));
-		PrivateKeyParams privateKeyParams = new PrivateKeyParams("good-user-crl-ocsp", null);
-		KeyStoreParams keyStoreParams = new KeyStoreParams("good-user-crl-ocsp.p12", keyStore, "ks-password", Set.of(privateKeyParams));
-		DocumentPayloadDTO documentPayload = new DocumentPayloadDTO(unsignedDocument, documentName, signature, extendSignature, keyStoreParams, false);
-		ObjectMapper objectMapper = new ObjectMapper();
-		System.out.println(objectMapper.writeValueAsString(documentPayload));
-	}
 
 	/*
 	good-user-crl-ocsp.p12
@@ -53,8 +33,6 @@ class DsmsApplicationTests {
 	signer-key-store.p12
 	signer-cert-alias
 	password
-
-	signedDocument - Copy (2)
 	 */
 	@Test
 	void testPades() throws IOException {
