@@ -28,6 +28,7 @@ The client will be available at localhost:4173.
 
 # Server:
 
+Please check beforehand that you have maven installed that supports JAVA 21.
 The server is a Spring Boot (version: 3.2.5) application, using JAVA 21.
 Inside the folder "\digital-signing\dsms",
 Set the JAVA_HOME env variable to the JAVA 21 location.
