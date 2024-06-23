@@ -2,9 +2,10 @@
 
 # Welcome to the the digital-signing app!
 
-The app can sign PAdES, XAdES, JAdES, CAdES up to baseline levels B-B, B-T, B-LT and B-LTA.
+It is a web application that can sign PAdES, XAdES, JAdES, CAdES up to baseline levels B-B, B-T, B-LT and B-LTA.
 The build and steps will be split into 3 parts: client, server, database.
 
+The original GitHub repository: https://github.com/AlexNica11/digital-signing
 
 # Client:
 
