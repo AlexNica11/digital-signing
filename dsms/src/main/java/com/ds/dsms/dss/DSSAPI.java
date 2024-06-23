@@ -250,8 +250,6 @@ public class DSSAPI {
             }
         }
 
-//        System.out.println("MimeType: " + signedDocument.getMimeType() + " extension: " + signedDocument.getMimeType().getExtension());
-
         return DSSUtils.toByteArray(signedDocument);
     }
 
@@ -323,8 +321,6 @@ public class DSSAPI {
                 }
             }
         }
-
-        System.out.println("MimeType: " + signedDocument.getMimeType() + " extension: " + signedDocument.getMimeType().getExtension());
 
         return DSSUtils.toByteArray(signedDocument);
     }

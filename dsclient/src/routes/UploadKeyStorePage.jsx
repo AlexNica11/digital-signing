@@ -23,12 +23,8 @@ export default function UploadKeyStorePage(){
             formData.append("keyStorePassword", keyStorePassword);
             formData.append("privateKeyParams", JSON.stringify(privateKeyParams));
 
-            // Details of the uploaded file
-            console.log(selectedFile);
-
             // Request made to the backend api
             // Send formData object
-            // axios.post("api/uploadKeyStoreForm", formData);
             axios({
                 method: 'post',
                 url: `/api/users/uploadKeyStoreForm`,
@@ -71,8 +67,6 @@ export default function UploadKeyStorePage(){
 
     const handleSubmitKeyStoreEntry = (e) => {
         e.preventDefault();
-        console.log("alias: ", privateKeyParam.alias);
-        console.log("password: ", privateKeyParam.password);
         if (privateKeyParam.username !== "") {
             if(privateKeyParam.password === ""){
                 privateKeyParam.password = null;
@@ -81,7 +75,6 @@ export default function UploadKeyStorePage(){
                 ...privateKeyParams,
                 privateKeyParam
             ])
-            console.log(privateKeyParams)
             return;
         }
         alert("please provide a valid input");

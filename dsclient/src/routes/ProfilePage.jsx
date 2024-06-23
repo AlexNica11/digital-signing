@@ -20,7 +20,6 @@ export default function ProfilePage(){
                 'Content-Type': 'application/json'
             }
         }).then((res) => {
-            console.log(res.data);
             setKeyStores(res.data);
         }).catch((error) => {
             console.error(error);
@@ -35,7 +34,6 @@ export default function ProfilePage(){
                 'Content-Type': 'application/json'
             }
         }).then((res) => {
-            console.log(res.data);
             user.username = res.data.username;
             user.email = res.data.email;
             setUser(user);
@@ -60,7 +58,9 @@ export default function ProfilePage(){
                 <ul className="collection">
                     {keyStores.map((ks) =>
                         <li key={ks}>
-                            <NavLink className="collection-item active light-blue accent-4" to={"/keyStore/" + ks}>{ks}</NavLink>
+                            <NavLink className="collection-item active light-blue accent-4" to={"/keyStore/" + ks}>
+                                {ks}
+                            </NavLink>
                         </li>
                     )}
                 </ul>

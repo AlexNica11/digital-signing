@@ -36,14 +36,13 @@ export default function KeyStorePage(){
                 'Content-Type': 'text/plain'
             }
         }).then((res) => {
-            console.log(res.data);
             setPkParams(res.data);
         }).catch((error) => {
             console.error(error);
         });
     }, [])
 
-    console.log(keyStoreName);
+
 
     return (
         <>

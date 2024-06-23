@@ -11,8 +11,6 @@ const Login = () => {
     const auth = useAuth();
     const handleSubmitEvent = (e) => {
         e.preventDefault();
-        console.log("username: ", input.username);
-        console.log("password: ", input.password);
         if (input.username !== "" && input.password !== "") {
             auth.loginAction(input).then(r => console.log(r));
             return;

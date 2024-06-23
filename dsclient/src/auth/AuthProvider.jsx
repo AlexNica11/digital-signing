@@ -13,7 +13,7 @@ const AuthProvider = ({ children }) => {
         try {
             let data1 = JSON.stringify(data);
 
-            console.log(data1);
+
 
             const response  = await axios({
                 method: 'post',
@@ -27,9 +27,9 @@ const AuthProvider = ({ children }) => {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(response);
+
             const res = await response.data;
-            console.log(res.jwt);
+
             if (res.jwt) {
                 setUser(data.username);
                 setToken(res.jwt);

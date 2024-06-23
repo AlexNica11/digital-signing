@@ -13,9 +13,6 @@ const Login = () => {
 
     const handleSubmitEvent = async (e) => {
         e.preventDefault();
-        console.log("email: ", input.email);
-        console.log("username: ", input.username);
-        console.log("password: ", input.password);
         if (input.username !== "" && input.password !== "") {
             await axios({
                 method: 'post',

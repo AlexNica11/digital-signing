@@ -16,7 +16,6 @@ export default function DocumentStatusPage(){
                     Accept: 'application/json',
                 }
             }).then((res) => {
-                console.log(res.data);
                 setRunningJobs(res.data);
             }).catch((error) => {
                 console.error(error);
@@ -30,7 +29,6 @@ export default function DocumentStatusPage(){
                     Accept: 'application/json',
                 }
             }).then((res) => {
-                console.log(res.data);
                 setCompletedJobs(res.data);
             }).catch((error) => {
                 console.error(error);
@@ -49,8 +47,6 @@ export default function DocumentStatusPage(){
 
     const getFile = (e) => {
         const jobId = e.target.textContent;
-
-        console.log(jobId)
 
         axios({
             method: 'post',

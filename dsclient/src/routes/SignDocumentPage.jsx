@@ -112,7 +112,6 @@ export default function SignDocumentPage(){
                 'Content-Type': 'application/json'
             }
         }).then((resKs) => {
-            console.log(resKs.data);
             setKeyStores(resKs.data);
             params.keyStoreName = resKs.data[0];
 
@@ -127,7 +126,6 @@ export default function SignDocumentPage(){
                         'Content-Type': 'text/plain'
                     }
                 }).then((resPk) => {
-                    console.log(resPk.data);
                     setPrivateKeyAliases(resPk.data);
                     params.privateKeyAlias = resPk.data[0];
                     setParams(params);
@@ -156,7 +154,6 @@ export default function SignDocumentPage(){
                     'Content-Type': 'text/plain'
                 }
             }).then((resPk) => {
-                console.log(resPk.data);
                 setPrivateKeyAliases(resPk.data);
                 params.privateKeyAlias = resPk.data[0];
                 params.keyStoreName = value;
